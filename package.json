@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect": "^3.6.5",
+    "connect-mongo": "^2.0.1",
+    "cookie": "^0.3.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "mongo": "^0.1.0",
+    "mongoose": "^5.0.4",
+    "passport": "^0.4.0",
+    "passport-instagram": "^1.0.0",
+    "telegraf": "^3.17.8",
+    "util": "^0.10.3"
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "signIn": "/sign_in",
+    "signOut": "/sign_out",
+    "signInCallback": "/sign_in/callback",
+    "subscribe": "/subscribe",
+    "subscribeCallback": "/subscribe/callback"
+}
