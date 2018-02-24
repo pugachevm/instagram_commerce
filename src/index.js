@@ -10,7 +10,7 @@ var onStart = require('./onStart'),
     onGetChatId = require('./onGetChatId');
 
 const DOMAIN = 'localhost';
-const PORT = '3000';
+const PORT = process.env.PORT || '3000';
 const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
 
 var $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN);
