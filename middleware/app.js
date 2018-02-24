@@ -35,7 +35,7 @@ module.exports = function (domain, port, signInCallback) {
         clientID: INSTAGRAM_CLIENT_ID,
         clientSecret: INSTAGRAM_CLIENT_SECRET,
         callbackURL: [
-            'http://',
+            'https://',
             domain,
             ':'+ port,
             URL_AUTH_CALLBACK

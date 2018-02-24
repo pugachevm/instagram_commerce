@@ -1,5 +1,5 @@
 {
     "signIn": [
-        { "label": "Войти через Instagram", "value": "http://127.0.0.1:3000/sign_in/"}
+        { "label": "Войти через Instagram", "value": "https://instagram-commerce.herokuapp.com/sign_in/"}
     ]
 }

@@ -9,7 +9,7 @@ var onStart = require('./onStart'),
     onSubscribe = require('./onSubscribe'),
     onGetChatId = require('./onGetChatId');
 
-const DOMAIN = 'localhost';
+const DOMAIN = 'instagram-commerce.herokuapp.com';
 const PORT = process.env.PORT || '3000';
 const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
 
