@@ -1,6 +1,5 @@
 var express = require('express'),
     passport = require('passport'),
-    connect = require('connect'),
     fs = require('fs'),
     util = require('util'),
     cookie = require('cookie'),
