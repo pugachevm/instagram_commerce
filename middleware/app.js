@@ -43,7 +43,13 @@ module.exports = function (proto, domain, port, signInCallback) {
         scope: ['relationships', 'follower_list']
     },
         function (accessToken, refreshToken, profile, done) {
+
+            console.info('Profile: %o', profile);
+
             process.nextTick(function () {
+
+                console.log('next tick -->');
+
                 done(null, profile);
 
                 return signInCallback({
@@ -61,9 +67,13 @@ module.exports = function (proto, domain, port, signInCallback) {
 
     router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {
         // do
+        console.log('Auth uri executed')
     });
 
     router.get(URL_AUTH_CALLBACK, passport.authenticate('instagram', { failureRedirect: URL_AUTH }), function (req, res) {
+
+        console.log('Auth callback uri executed');
+
         res.redirect('/');
     });
 
