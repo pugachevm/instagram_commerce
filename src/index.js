@@ -9,7 +9,8 @@ var onStart = require('./onStart'),
     onSubscribe = require('./onSubscribe'),
     onGetChatId = require('./onGetChatId');
 
-const DOMAIN = 'instagram-commerce.herokuapp.com';
+const PROTO = process.env.PROTO || 'http';
+const DOMAIN = process.env.DOMAIN || 'instagram-commerce.herokuapp.com';
 const PORT = process.env.PORT || '3000';
 const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
 
@@ -31,7 +32,7 @@ module.exports = function() {
     // Run the Web-server
     App.call({
         sessionParser: sessionParser
-    }, DOMAIN, PORT, function(data) {
+    }, PROTO, DOMAIN, PORT, function(data) {
         return $bot.emit('authorized', data)
     })
 };

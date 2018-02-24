@@ -21,7 +21,7 @@ const URL_AUTH_CALLBACK = PATHMAP.signInCallback;
 const URL_SUBSCRIBE = PATHMAP.subscribe;
 const URL_SUBSCRIBE_CALLBACK = PATHMAP.subscribeCallback;
 
-module.exports = function (domain, port, signInCallback) {
+module.exports = function (proto, domain, port, signInCallback) {
 
     passport.serializeUser(function (user, done) {
         done(null, user);
@@ -35,7 +35,7 @@ module.exports = function (domain, port, signInCallback) {
         clientID: INSTAGRAM_CLIENT_ID,
         clientSecret: INSTAGRAM_CLIENT_SECRET,
         callbackURL: [
-            'https://',
+            proto + '://',
             domain,
             ':'+ port,
             URL_AUTH_CALLBACK

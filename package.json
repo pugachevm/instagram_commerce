@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "yarn install && node index.js"
+    "start:prod": "yarn install && PROTO=https node index.js",
+    "start:dev": "DOMAIN=localhost node index.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
