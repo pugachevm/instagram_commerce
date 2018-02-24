@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "yarn install --check-files && node index.js"
+    "start": "yarn install && node index.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",

@@ -86,7 +86,11 @@ module.exports = function (domain, port, signInCallback) {
         extended: true
     }));
     app.use(cookieParser());
-    app.use(this.sessionParser({ secret: 'keyboard cat' }));
+    app.use(this.sessionParser({
+        secret: 'keyboard cat',
+        resave: true,
+        saveUninitialized: true
+    }));
     app.use(passport.initialize());
     app.use(passport.session());
 
