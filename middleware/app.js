@@ -40,7 +40,7 @@ module.exports = function (proto, domain, port, signInCallback) {
         callbackURL: [
             proto + '://',
             domain,
-            ':'+ port,
+            (port == 3000 ? ':'+ port : ''),
             URL_AUTH_CALLBACK
         ].join(''),
         scope: ['relationships', 'follower_list']
