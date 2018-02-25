@@ -25,12 +25,10 @@ const URL_SUBSCRIBE_CALLBACK = PATHMAP.subscribeCallback;
 module.exports = function (proto, domain, port, signInCallback) {
 
     passport.serializeUser(function (user, done) {
-        console.log('SERIALIZATION %o', user);
         done(null, user);
     });
 
     passport.deserializeUser(function (obj, done) {
-        console.log('DESERIALIZATION %o', obj);
         done(null, obj);
     });
 
@@ -47,11 +45,7 @@ module.exports = function (proto, domain, port, signInCallback) {
     },
         function (accessToken, refreshToken, profile, done) {
 
-            console.info('Profile: %o', profile);
-
             process.nextTick(function () {
-
-                console.log('next tick -->');
 
                 done(null, profile);
 

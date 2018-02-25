@@ -9,7 +9,8 @@ module.exports = InstagramCommerce;
 
 function InstagramCommerce(token) {
 
-    var bot = new Telegraf(token);
+    var _this = this,
+        bot = new Telegraf(token);
 
     var registeredEvents = {},
         $api = null,
@@ -29,8 +30,7 @@ function InstagramCommerce(token) {
     };
 
     this.emit = function(event) {
-        var _this = this,
-            actions = registeredEvents[event],
+        var actions = registeredEvents[event],
             _arguments = Array.prototype.splice.call(arguments, 1);
         
         _arguments.unshift($api);
@@ -49,7 +49,7 @@ function InstagramCommerce(token) {
     };
 
     this.send = function(message, extra) {
-        return this.getChatId()
+        return _this.getChatId()
             .then(function(chatId) {
                 return bot.telegram.sendMessage(chatId, message, extra);
             })
@@ -60,8 +60,6 @@ function InstagramCommerce(token) {
     };
 
     this.getChatId = function(userData) {
-
-        var _this = this;
 
         return new Promise(function(resolve, reject) {
             if(!!chatId) {
@@ -92,8 +90,7 @@ function InstagramCommerce(token) {
 
         $api = api;
 
-        var _this = this,
-            setChatId = this.setChatId;
+        var setChatId = this.setChatId;
 
         return bot
             .start(function(context) {
