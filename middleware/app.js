@@ -75,7 +75,7 @@ module.exports = function (proto, domain, port, signInCallback) {
 
         console.log('Auth callback uri executed');
 
-        res.redirect('/');
+        res.send('<script>window.close()</script>');
     });
 
     router.get(URL_LOGOUT, function(req, res) {
