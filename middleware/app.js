@@ -24,10 +24,12 @@ const URL_SUBSCRIBE_CALLBACK = PATHMAP.subscribeCallback;
 module.exports = function (proto, domain, port, signInCallback) {
 
     passport.serializeUser(function (user, done) {
+        console.log('SERIALIZATION %o', user);
         done(null, user);
     });
 
     passport.deserializeUser(function (obj, done) {
+        console.log('DESERIALIZATION %o', obj);
         done(null, obj);
     });
 
@@ -75,14 +77,6 @@ module.exports = function (proto, domain, port, signInCallback) {
         console.log('Auth callback uri executed');
 
         res.redirect('/');
-    });
-
-    router.get(URL_SUBSCRIBE, function(req, res) {
-
-    });
-
-    router.get(URL_SUBSCRIBE_CALLBACK, function(req, res) {
-
     });
 
     router.get(URL_LOGOUT, function(req, res) {
