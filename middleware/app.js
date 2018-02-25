@@ -15,6 +15,7 @@ var CREDENTIALS = JSON.parse(fs.readFileSync('middleware/creds.json', 'utf-8')),
 
 const INSTAGRAM_CLIENT_ID = CREDENTIALS.instagram_cliendId;
 const INSTAGRAM_CLIENT_SECRET = CREDENTIALS.instagram_token;
+
 const URL_AUTH = PATHMAP.signIn;
 const URL_LOGOUT = PATHMAP.signOut;
 const URL_AUTH_CALLBACK = PATHMAP.signInCallback;
@@ -66,6 +67,10 @@ module.exports = function (proto, domain, port, signInCallback) {
     router.get('/', function (req, res) {
         res.send('Hello ' + req.isAuthenticated());
     });
+
+    router.get('/test', function(req, res) {
+        res.send('Test successful');
+    })
 
     router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {
         // do
