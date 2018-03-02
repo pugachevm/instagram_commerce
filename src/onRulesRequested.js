@@ -9,5 +9,5 @@ module.exports = function($api, context) {
 
     console.log('$bot from action: %o', $bot.action);
     
-    return context.editMessageText('Rules requested', $bot.getKeyboard(BUTTONS.menuBack))
+    return context.editMessageText(MESSAGES.menuRules.join(''), $bot.getKeyboard(BUTTONS.menuBack))
 };
