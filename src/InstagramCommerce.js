@@ -95,12 +95,14 @@ function InstagramCommerce(token) {
     this.hears = function (match, middleware) {
         var setChatId = _this.setChatId;
 
-        return bot.hears.call(bot, match, function(context) {
+        bot.hears.call(bot, match, function(context) {
             var chatId = context.chat.id;
             setChatId(chatId);
 
-            return middleware.call(bot, context)
-        })
+            return middleware.call(_this, $api, context)
+        });
+
+        return this
     }
 
     this.start = function (api) {
@@ -158,15 +160,15 @@ function buildKeyboard(buttons, type, options) {
     var markup = this,
         result = null;
 
-    var keyboard = buttons.map(function (button) {
+    var keyboard = buttons.map(function (button, i) {
         var label = button.label,
             value = button.value;
 
         if (!!value && !!value.match(/\:\/\//i)) {
-            return markup.urlButton(label, value)
+            return [ markup.urlButton(label, value) ]
         }
 
-        return markup.callbackButton(label, value)
+        return [ markup.callbackButton(label, value) ]
     });
 
     switch (type) {

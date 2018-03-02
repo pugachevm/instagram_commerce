@@ -25,15 +25,6 @@ module.exports = function($api, chatId, context) {
             $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn))
         });
 
-        $bot.action('/rules', function(cotext) {
-            console.log('Rules')
-            return context.reply('Rules requested')
-        })
-
-        $bot.hears(/.+/, function(context) {
-            return context.reply('aaaaaa', $bot.getKeyboard(BUTTONS.menu, 'inline', { columns: 1 }))
-        })
-
     return context.reply(MESSAGES.start, $bot.getKeyboard(BUTTONS.callMenu, 'static'))
 
 };

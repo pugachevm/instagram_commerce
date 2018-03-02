@@ -6,8 +6,6 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 module.exports = function($api, context) {
 
     let $bot = this;
-
-    console.log('$bot from action: %o', $bot.action);
     
-    return context.editMessageText('Rules requested', $bot.getKeyboard(BUTTONS.menuBack))
+    return context.editMessageText('Points requested', $bot.getKeyboard(BUTTONS.menuBack))
 };

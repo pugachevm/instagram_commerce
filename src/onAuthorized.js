@@ -18,7 +18,6 @@ module.exports = function($api, data) {
         .then(function(chatId) {
             $api.updateUserData({ chatId: chatId }, userData)
                 .then(function(user) {
-                    console.log('$bot: %o', $bot);
                     $bot.emit('subscribe', accessToken)
                 })
         });

@@ -1,11 +1,17 @@
-var sessionParser = require('express-session'),
+let sessionParser = require('express-session'),
     InstagramCommerce = require('./InstagramCommerce'),
     App = require('../middleware/app'),
     Api = require('../middleware/api');
 
 // Telegram Bot methods requirements
-var onStart = require('./onStart'),
+let onStart = require('./onStart'),
+    onMenuRequested = require('./onMenuRequested'),
     onRulesRequested = require('./onRulesRequested'),
+    onPointsRequested = require('./onPointsRequested'),
+    onTopRequested = require('./onTopRequested'),
+    onRewardsRequested = require('./onRewardsRequested'),
+    onFriendInviteRequested = require('./onFriendInviteRequested')
+    onWhoAmI = require('./onWhoAmI')
     onAuthorized = require('./onAuthorized'),
     onSubscribe = require('./onSubscribe'),
     onGetChatId = require('./onGetChatId');
@@ -15,7 +21,7 @@ const DOMAIN = process.env.DOMAIN || 'instagram-commerce.herokuapp.com';
 const PORT = process.env.PORT || '3000';
 const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
 
-var $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN);
+let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN);
 
 module.exports = function() {
     console.log('Connected to mLab');
@@ -25,7 +31,14 @@ module.exports = function() {
     // Run Telegram Bot
     $bot
         .on('/start', onStart)
+        .hears(/меню/i, onMenuRequested)
+        .action(':back', onMenuRequested)
         .action(':rules', onRulesRequested)
+        .action(':points', onPointsRequested)
+        .action(':top@20', onTopRequested)
+        .action(':rewards', onRewardsRequested)
+        .action(':invite@friend', onFriendInviteRequested)
+        .action(':whoami', onWhoAmI)
         .on('authorized', onAuthorized)
         .on('subscribe', onSubscribe)
         .on('getChatId', onGetChatId)

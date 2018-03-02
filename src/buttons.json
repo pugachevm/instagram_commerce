@@ -10,6 +10,9 @@
         { "label": "Пригласить друга", "value": ":invite@friend" },
         { "label": "Организаторы ™️", "value": ":whoami" }
     ],
+    "menuBack": [
+        { "label": "🔙 Назад", "value": ":back" }
+    ],
     "signIn": [
         { "label": "Войти через Instagram", "value": "https://instagram-commerce.herokuapp.com/sign_in/"}
     ],
