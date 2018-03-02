@@ -5,6 +5,7 @@ var sessionParser = require('express-session'),
 
 // Telegram Bot methods requirements
 var onStart = require('./onStart'),
+    onRulesRequested = require('./onRulesRequested'),
     onAuthorized = require('./onAuthorized'),
     onSubscribe = require('./onSubscribe'),
     onGetChatId = require('./onGetChatId');
@@ -23,7 +24,8 @@ module.exports = function() {
 
     // Run Telegram Bot
     $bot
-        .on('start', onStart)
+        .on('/start', onStart)
+        .action(':rules', onRulesRequested)
         .on('authorized', onAuthorized)
         .on('subscribe', onSubscribe)
         .on('getChatId', onGetChatId)

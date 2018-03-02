@@ -1,4 +1,15 @@
 {
+    "callMenu": [
+        { "label": "Меню", "value": "" }
+    ],
+    "menu": [
+        { "label": "Правила конкурса", "value": ":rules" },
+        { "label": "Мои Баллы", "value": ":points" },
+        { "label": "🔝 ТОП 2️⃣0️⃣", "value": ":top@20" },
+        { "label": "Призы 🎁", "value": ":rewards" },
+        { "label": "Пригласить друга", "value": ":invite@friend" },
+        { "label": "Организаторы ™️", "value": ":whoami" }
+    ],
     "signIn": [
         { "label": "Войти через Instagram", "value": "https://instagram-commerce.herokuapp.com/sign_in/"}
     ],

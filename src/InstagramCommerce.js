@@ -16,31 +16,24 @@ function InstagramCommerce(token) {
         $api = null,
         chatId = null;
 
-    this.on = function(event, action) {
-
-        if(!!event.match(/^\:/)) {
-            bot.command(event.slice(1), action);
-
-            return this
-        }
-
+    this.on = function (event, action) {
         addEvent.call(registeredEvents, event, action);
 
         return this
     };
 
-    this.emit = function(event) {
+    this.emit = function (event) {
         var actions = registeredEvents[event],
             _arguments = Array.prototype.splice.call(arguments, 1);
-        
+
         _arguments.unshift($api);
 
-        if(!!actions == false) {
+        if (!!actions == false) {
             return
         }
 
-        if(actions.length) {
-            return actions.forEach(function(action, i) {
+        if (actions.length) {
+            return actions.forEach(function (action, i) {
                 action.apply(_this, _arguments);
             })
         }
@@ -48,33 +41,33 @@ function InstagramCommerce(token) {
         return actions.apply(_this, _arguments)
     };
 
-    this.send = function(message, extra) {
+    this.send = function (message, extra) {
         return _this.getChatId()
-            .then(function(chatId) {
+            .then(function (chatId) {
                 return bot.telegram.sendMessage(chatId, message, extra);
             })
     };
 
-    this.setChatId = function(_chatId) {
+    this.setChatId = function (_chatId) {
         chatId = _chatId;
     };
 
-    this.getChatId = function(userData) {
+    this.getChatId = function (userData) {
 
-        return new Promise(function(resolve, reject) {
-            if(!!chatId) {
+        return new Promise(function (resolve, reject) {
+            if (!!chatId) {
                 return resolve(chatId)
             }
 
             var getChatId = _this.emit('getChatId', userData);
 
-            if(isPromise(getChatId)) {
+            if (isPromise(getChatId)) {
                 return getChatId
                     .then(resolve)
                     .catch(reject)
             }
 
-            if(!getChatId) {
+            if (!getChatId) {
                 return reject(new Error('Wrong chat id'))
             }
 
@@ -82,27 +75,67 @@ function InstagramCommerce(token) {
         })
     };
 
-    this.getKeyboard = function(buttons, type) {
+    this.getKeyboard = function (buttons, type) {
         return buildKeyboard.call(Markup, buttons, type)
     };
 
-    this.start = function(api) {
+    this.action = function (match, middleware) {
+        var setChatId = _this.setChatId;
+
+        bot.action.call(bot, match, function(context) {
+            var chatId = context.chat.id;
+            setChatId(chatId);
+
+            return middleware.call(_this, $api, context)
+        });
+
+        return this
+    }
+
+    this.hears = function (match, middleware) {
+        var setChatId = _this.setChatId;
+
+        return bot.hears.call(bot, match, function(context) {
+            var chatId = context.chat.id;
+            setChatId(chatId);
+
+            return middleware.call(bot, context)
+        })
+    }
+
+    this.start = function (api) {
 
         $api = api;
 
-        var setChatId = this.setChatId;
+        var setChatId = _this.setChatId,
+            rule = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]*)$/i;
 
         return bot
-            .start(function(context) {
-
-                setChatId(context.chat.id);
-
-                return _this.emit('start', chatId, context)
-            })
-            .hears(/(.*)/ig, function(context) {
-                setChatId(context.chat.id);
-            })
+            .command(_commandMiddleware)
             .startPolling();
+
+        function _commandMiddleware(context, next) {
+            var chatId = context.chat.id;
+            setChatId(chatId);
+
+            var opts = rule.exec(context.message.text);
+
+            if (!opts) { return next() }
+
+            var command = opts[1],
+                data = {
+                    text: context.message.text,
+                    command: command,
+                    param: opts[2],
+                    args: opts[3]
+                }; console.log('data: %o', data);
+
+            context.state.data = data;
+
+            _this.emit(['/', command].join(''), chatId, context)
+
+            return next()
+        }
     }
 
 }
@@ -110,7 +143,7 @@ function InstagramCommerce(token) {
 function addEvent(event, action) {
     var events = this[event] || [];
 
-    if(!isFunction(action)) {
+    if (!isFunction(action)) {
         return
     }
 
@@ -119,29 +152,29 @@ function addEvent(event, action) {
     return this[event] = events
 }
 
-function buildKeyboard(buttons, type) {
+function buildKeyboard(buttons, type, options) {
     type = !!type ? type : 'inline';
 
     var markup = this,
         result = null;
 
-    var keyboard = buttons.map(function(button) {
+    var keyboard = buttons.map(function (button) {
         var label = button.label,
             value = button.value;
-        
-        if(!!value.match(/\/\//i)) {
+
+        if (!!value && !!value.match(/\:\/\//i)) {
             return markup.urlButton(label, value)
         }
 
         return markup.callbackButton(label, value)
     });
 
-    switch(type) {
+    switch (type) {
         case 'inline':
-            result = this.inlineKeyboard(keyboard).extra();
+            result = this.inlineKeyboard(keyboard, options).extra();
             break;
         default:
-            result = this.resize().keyboard(keyboard).extra();
+            result = this.resize().keyboard(keyboard, options).extra();
             break;
     }
 
