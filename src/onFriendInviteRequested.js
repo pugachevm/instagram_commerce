@@ -1,15 +1,18 @@
-let fs = require('fs');
+let fs = require('fs'),
+    Extra = require('telegraf/extra');
 
 const BUTTONS = JSON.parse(fs.readFileSync('./src/buttons.json', 'utf-8'));
 const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 
 module.exports = function($api, context) {
-
     let $bot = this,
-        userData = context.from;
+        markup = Extra.markdown(),
+        userData = context.from,
+        _invitationLink = 'https://telegram.me/pugachevs_bot?start=$user'.replace(/\$user/i, userData.username);
+        //'tg://resolve?domain=pugachevs_bot&start=$user'.replace(/\$user/g, userData.username);
     
     return context.editMessageText([
         MESSAGES.invitationLink,
-        'tg://resolve?domain=pugachevs_bot&start=$user'.replace(/\$user/g, userData.username)
-    ].join(''))//, $bot.getKeyboard(BUTTONS.menuBack))
+        `[${MESSAGES.contestName}](${_invitationLink})`
+    ].join(''), markup)
 };

@@ -1,11 +1,10 @@
-var fs = require('fs');
+let fs = require('fs');
 
 const BUTTONS = JSON.parse(fs.readFileSync('./src/buttons.json', 'utf-8'));
 const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 
 module.exports = function($api, chatId, context) {
-
-    var $bot = this,
+    let $bot = this,
         userData = context.from,
         stateData = context.state.data,
         user = {
@@ -18,13 +17,17 @@ module.exports = function($api, chatId, context) {
     $api.setChatId(user, chatId)
         .then(function(user) {
 
-            if(stateData.args) {
+            if(stateData.args && !!~stateData.args.indexOf(userData.username) == false) {
                 $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, stateData.args))
             }
 
             $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn))
         });
 
-    return context.reply(MESSAGES.start, $bot.getKeyboard(BUTTONS.callMenu, 'static'))
+    return $bot.reply(
+        context,
+        MESSAGES.start,
+        $bot.getKeyboard(BUTTONS.callMenu, 'static')
+    )
 
 };

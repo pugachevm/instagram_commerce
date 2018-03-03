@@ -1,5 +1,5 @@
 var Telegraf = require('telegraf'),
-    telegrafExtra = require('telegraf/extra'),
+    Extra = require('telegraf/extra'),
     telegrafSession = require('telegraf/session'),
     Markup = require('telegraf/markup'),
     isFunction = require('../utils/isFunction'),
@@ -41,12 +41,20 @@ function InstagramCommerce(token) {
         return actions.apply(_this, _arguments)
     };
 
+    this.reply = function(ctx, message, extra) {
+        return ctx.reply(message, Object.assign(extra, Extra.markdown()))
+    };
+
     this.send = function (message, extra) {
         return _this.getChatId()
             .then(function (chatId) {
-                return bot.telegram.sendMessage(chatId, message, extra);
+                return bot.telegram.sendMessage(chatId, message, Object.assign(extra, Extra.markdown()))
             })
     };
+
+    this.editMessage = function(ctx, message, extra) {
+        return ctx.editMessageText(message, Object.assign(extra, Extra.markdown()))
+    }
 
     this.setChatId = function (_chatId) {
         chatId = _chatId;
