@@ -9,9 +9,7 @@ module.exports = function($api) {
     
     $api.setUserPoints(userData.telegramNickname, { instagram: 'pugachevmark' })
         .then((result) => {
-            console.log(' Success!!!!!')
+            console.log('Success!!!!!')
         })
         .catch(console.error)
-
-    $bot.send(MESSAGES.subscribe, $bot.getKeyboard(BUTTONS.subscribe))
 };

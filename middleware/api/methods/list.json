@@ -2,5 +2,6 @@
     "getChatId",
     "setChatId",
     "updateUserData",
-    "setUserPoints"
+    "setUserPoints",
+    "getUserPoints"
 ]

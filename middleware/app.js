@@ -64,7 +64,8 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
 
     router.get(URL_SUBSCRIBE, function(req, res) {
         subscribeCallback();
-        res.send('Subscribed! successful');
+        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/'});
+        res.end();
     })
 
     router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {

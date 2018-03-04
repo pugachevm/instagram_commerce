@@ -21,14 +21,9 @@ module.exports = function($api, chatId, context) {
             if(!!friend) {// && !!~stateData.args.indexOf(userData.username) == false) {
                 $api.setUserPoints(user.telegramNickname, { friend })
                 .then(user => {
-                    console.log('user %o', user);
-                    console.log('USERS WERE PROCEEDED');
                     $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
                 })
                 .catch(err => console.error)
-
-                console.log('here should be sent a message')
-                
             }
 
             $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn))

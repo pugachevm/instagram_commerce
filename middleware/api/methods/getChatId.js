@@ -1,15 +1,14 @@
-var method = require('./method');
+let method = require('./method');
 
 module.exports = function(models) {
     return method(models, getChatId)
 };
 
 function getChatId(userData) {
-
-    var models = this,
+    let models = this,
         Users = models.Users;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         Users
             .findOne(userData, function(err, user) {
