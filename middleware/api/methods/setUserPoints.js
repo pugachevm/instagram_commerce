@@ -117,7 +117,7 @@ function addPoints(scoreId, update) {
                 score = !!score ? score : new Scores();
 
                 score.initAction = true;
-                !!instagram && !isHashExists(score.friendsInvitations, instagram) && score.instagramSubscriptions.push(instagram);
+                !!instagram && !isHashExists(score.instagramSubscriptions, instagram) && score.instagramSubscriptions.push(instagram);
                 !!friend && !isHashExists(score.friendsInvitations, friend) && score.friendsInvitations.push(friend);
 
                 score.save((err) => {
