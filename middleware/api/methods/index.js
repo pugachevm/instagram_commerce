@@ -1,7 +1,7 @@
-var fs = require('fs');
+let fs = require('fs');
 
 module.exports = function(models) {
-    var methodsList = JSON.parse(fs.readFileSync('./middleware/api/methods/list.json', 'utf-8')),
+    let methodsList = JSON.parse(fs.readFileSync('./middleware/api/methods/list.json', 'utf-8')),
         methods = {};
 
     methodsList.forEach(function(method) {

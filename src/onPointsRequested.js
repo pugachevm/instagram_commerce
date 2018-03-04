@@ -7,5 +7,10 @@ module.exports = function($api, context) {
 
     let $bot = this;
     
-    return context.editMessageText('Points requested', $bot.getKeyboard(BUTTONS.menuBack))
+    return context.answerCbQuery(MESSAGES.loading)
+        .then(() => $bot.editMessage(
+            context,
+            'Points requested',
+            $bot.getKeyboard(BUTTONS.menuBack)
+        ))
 };

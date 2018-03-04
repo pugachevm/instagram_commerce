@@ -10,11 +10,12 @@ module.exports = InstagramCommerce;
 function InstagramCommerce(token) {
 
     var _this = this,
-        bot = new Telegraf(token);
-
-    var registeredEvents = {},
-        $api = null,
-        chatId = null;
+        bot = new Telegraf(token),
+        registeredEvents = {},
+        $api = null;
+    
+    this.$chatId = null;
+    this.$user = null;
 
     this.on = function (event, action) {
         addEvent.call(registeredEvents, event, action);
@@ -41,30 +42,28 @@ function InstagramCommerce(token) {
         return actions.apply(_this, _arguments)
     };
 
-    this.reply = function(ctx, message, extra) {
+    this.reply = function(ctx, message, extra={}) {
         return ctx.reply(message, Object.assign(extra, Extra.markdown()))
     };
 
-    this.send = function (message, extra) {
+    this.send = function (message, extra={}) {
         return _this.getChatId()
             .then(function (chatId) {
                 return bot.telegram.sendMessage(chatId, message, Object.assign(extra, Extra.markdown()))
             })
     };
 
-    this.editMessage = function(ctx, message, extra) {
+    this.editMessage = function(ctx, message, extra={}) {
         return ctx.editMessageText(message, Object.assign(extra, Extra.markdown()))
     }
 
-    this.setChatId = function (_chatId) {
-        chatId = _chatId;
-    };
+    this.setChatId = setChatId;
 
     this.getChatId = function (userData) {
 
         return new Promise(function (resolve, reject) {
-            if (!!chatId) {
-                return resolve(chatId)
+            if (!!_this.$chatId) {
+                return resolve(_this.$chatId)
             }
 
             var getChatId = _this.emit('getChatId', userData);
@@ -83,16 +82,21 @@ function InstagramCommerce(token) {
         })
     };
 
+    this.setUser = setUser;
+
+    this.getUser = function() {
+        return _this.$user
+    };
+
     this.getKeyboard = function (buttons, type) {
         return buildKeyboard.call(Markup, buttons, type)
     };
 
     this.action = function (match, middleware) {
-        var setChatId = _this.setChatId;
-
         bot.action.call(bot, match, function(context) {
             var chatId = context.chat.id;
-            setChatId(chatId);
+            setChatId.call(_this, chatId);
+            setUser.call(_this, context.from);
 
             return middleware.call(_this, $api, context)
         });
@@ -101,11 +105,10 @@ function InstagramCommerce(token) {
     }
 
     this.hears = function (match, middleware) {
-        var setChatId = _this.setChatId;
-
         bot.hears.call(bot, match, function(context) {
-            var chatId = context.chat.id;
-            setChatId(chatId);
+            var _chatId = context.chat.id;
+            setChatId.call(_this, _chatId);
+            setUser.call(_this, context.from);
 
             return middleware.call(_this, $api, context)
         });
@@ -117,16 +120,16 @@ function InstagramCommerce(token) {
 
         $api = api;
 
-        var setChatId = _this.setChatId,
-            rule = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]*)$/i;
+        var rule = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]*)$/i;
 
         return bot
             .command(_commandMiddleware)
             .startPolling();
 
         function _commandMiddleware(context, next) {
-            var chatId = context.chat.id;
-            setChatId(chatId);
+            var _chatId = context.chat.id;
+            setChatId.call(_this, _chatId);
+            setUser.call(_this, context.from);console.log('user: %o', _this.$user);
 
             var opts = rule.exec(context.message.text);
 
@@ -142,12 +145,25 @@ function InstagramCommerce(token) {
 
             context.state.data = data;
 
-            _this.emit(['/', command].join(''), chatId, context)
+            _this.emit(['/', command].join(''), _chatId, context)
 
             return next()
         }
     }
 
+}
+
+function setChatId(_chatId) {
+    this.$chatId = _chatId;
+}
+
+function setUser(_userData) {
+    this.$user = {
+        telegramId: _userData.id,
+        telegramNickname: _userData.username,
+        firstName: _userData.first_name,
+        lastName: _userData.last_name
+    }
 }
 
 function addEvent(event, action) {

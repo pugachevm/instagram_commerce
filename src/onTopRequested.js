@@ -7,5 +7,10 @@ module.exports = function($api, context) {
 
     let $bot = this;
     
-    return context.editMessageText('Top20 requested', $bot.getKeyboard(BUTTONS.menuBack))
+    return context.answerCbQuery()
+        .then(() => $bot.editMessage(
+            context,
+            'Top20 requested',
+            $bot.getKeyboard(BUTTONS.menuBack)
+        ))
 };

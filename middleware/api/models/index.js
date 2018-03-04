@@ -1,13 +1,14 @@
 module.exports = function(mongoose) {
     
-    var Schema = mongoose.Schema;
+    let Schema = mongoose.Schema;
 
-    var Users = require('./Users')(Schema),
+    let Users = require('./Users')(Schema),
         Scores = require('./Scores')(Schema);
     
     return {
         Users: mongoose.model('Users', Users),
-        Scores: mongoose.model('Scores', Scores)
+        Scores: mongoose.model('Scores', Scores),
+        _Schema: Schema
     }
 
 }

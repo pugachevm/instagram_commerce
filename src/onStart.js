@@ -15,10 +15,20 @@ module.exports = function($api, chatId, context) {
         };
 
     $api.setChatId(user, chatId)
-        .then(function(user) {
+        .then((user) => {
+            let friend = stateData.args;
 
-            if(stateData.args && !!~stateData.args.indexOf(userData.username) == false) {
-                $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, stateData.args))
+            if(!!friend) {// && !!~stateData.args.indexOf(userData.username) == false) {
+                $api.setUserPoints(user.telegramNickname, { friend })
+                .then(user => {
+                    console.log('user %o', user);
+                    console.log('USERS WERE PROCEEDED');
+                    $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
+                })
+                .catch(err => console.error)
+
+                console.log('here should be sent a message')
+                
             }
 
             $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn))

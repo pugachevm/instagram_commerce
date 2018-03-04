@@ -14,6 +14,7 @@ let onStart = require('./onStart'),
     onWhoAmI = require('./onWhoAmI')
     onAuthorized = require('./onAuthorized'),
     onSubscribe = require('./onSubscribe'),
+    onSubscribed = require('./onSubscribed'),
     onGetChatId = require('./onGetChatId');
 
 const PROTO = process.env.PROTO || 'http';
@@ -41,13 +42,15 @@ module.exports = function() {
         .action(':whoami', onWhoAmI)
         .on('authorized', onAuthorized)
         .on('subscribe', onSubscribe)
+        .on('subscribed', onSubscribed)
         .on('getChatId', onGetChatId)
         .start(api.method);
 
     // Run the Web-server
     App.call({
         sessionParser: sessionParser
-    }, PROTO, DOMAIN, PORT, function(data) {
-        return $bot.emit('authorized', data)
-    })
+    }, PROTO, DOMAIN, PORT,
+        (data) => $bot.emit('authorized', data),
+        () => $bot.emit('subscribed')
+    );
 };

@@ -11,8 +11,9 @@ module.exports = function($api, context) {
         _invitationLink = 'https://telegram.me/pugachevs_bot?start=$user'.replace(/\$user/i, userData.username);
         //'tg://resolve?domain=pugachevs_bot&start=$user'.replace(/\$user/g, userData.username);
     
-    return context.editMessageText([
-        MESSAGES.invitationLink,
-        `[${MESSAGES.contestName}](${_invitationLink})`
-    ].join(''), markup)
+    return context.answerCbQuery(MESSAGES.loading)
+        .then(() => $bot.editMessage(
+            context, [ MESSAGES.invitationLink, `[${MESSAGES.contestName}](${_invitationLink})` ].join(''),
+            markup
+        ))
 };

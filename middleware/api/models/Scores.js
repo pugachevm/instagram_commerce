@@ -9,7 +9,7 @@ module.exports = function(Schema) {
     return new Schema({
         initAction: { type: Boolean },
         instagramSubscriptions: [Schema.Types.Mixed],
-        friendsSubscriptions: [(new Pointer('Users'))]
+        friendsInvitations: [(new Pointer('Users'))]
     })
 
 }

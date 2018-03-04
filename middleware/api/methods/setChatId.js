@@ -1,41 +1,33 @@
-var method = require('./method');
+let method = require('./method');
 
-module.exports = function(models) {
+module.exports = (models) => {
     return method(models, setChatId)
 }
 
 function setChatId(userData, chatId) {
-
-    var models = this,
+    let models = this,
         Users = models.Users;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
 
-        var query = { chatId: chatId };
+        let query = { chatId: chatId };
 
-        Users
-            .findOneAndUpdate(userData, query, { upsert: true }, function(err, user) {
+        Users.findOneAndUpdate(userData, query, { upsert: true }, (err, user) => {
+            if (!!err) { return reject(err) }
 
-                if(!!err) {
-                    return reject(err)
-                }
+            if (!!user == false) {
+                userData = Object.assign(userData, query);
+                user = new Users(userData);
+            }
 
-                if(!!user == false) {
-                    userData = Object.assign(userData, query);
-                    user = new Users(userData);
-                }
+            user.save(function (err) {
+                if (!!err) { return reject(err) }
 
-                user.save(function(err) {
-
-                    if(!!err) {
-                        return reject(err)
-                    }
-
-                    return resolve(user)
-
-                })
+                return resolve(user)
 
             })
+
+        })
 
     })
 }

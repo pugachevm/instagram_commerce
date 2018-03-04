@@ -17,6 +17,6 @@
         { "label": "Войти через Instagram", "value": "https://instagram-commerce.herokuapp.com/sign_in/"}
     ],
     "subscribe": [
-        { "label": "Подписаться", "value": "https://instagram-commerce.herokuapp.com/test/" }
+        { "label": "Подписаться", "value": "https://instagram-commerce.herokuapp.com/subscribe/" }
     ]
 }

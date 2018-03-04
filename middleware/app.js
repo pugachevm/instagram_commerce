@@ -22,7 +22,7 @@ const URL_AUTH_CALLBACK = PATHMAP.signInCallback;
 const URL_SUBSCRIBE = PATHMAP.subscribe;
 const URL_SUBSCRIBE_CALLBACK = PATHMAP.subscribeCallback;
 
-module.exports = function (proto, domain, port, signInCallback) {
+module.exports = function (proto, domain, port, signInCallback, subscribeCallback) {
 
     passport.serializeUser(function (user, done) {
         done(null, user);
@@ -62,8 +62,9 @@ module.exports = function (proto, domain, port, signInCallback) {
         res.send('Hello ' + req.isAuthenticated());
     });
 
-    router.get('/test', function(req, res) {
-        res.send('Test successful');
+    router.get(URL_SUBSCRIBE, function(req, res) {
+        subscribeCallback();
+        res.send('Subscribed! successful');
     })
 
     router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {

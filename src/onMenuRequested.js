@@ -9,6 +9,6 @@ module.exports = function($api, context) {
         $menu = $bot.getKeyboard(BUTTONS.menu);
     
     return type == 'callback_query'
-        ? context.editMessageText(MESSAGES.menuRequested, $menu)
+        ? context.answerCbQuery(MESSAGES.loading).then(() => $bot.editMessage(context, MESSAGES.menuRequested, $menu))
         : context.reply(MESSAGES.menuRequested, $menu)
 };

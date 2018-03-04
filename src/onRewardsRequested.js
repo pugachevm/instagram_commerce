@@ -6,9 +6,10 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 module.exports = function($api, context) {
     let $bot = this;
     
-    return $bot.editMessage(
-        context,
-        MESSAGES.rewards.join(''),
-        $bot.getKeyboard(BUTTONS.menuBack)
-    )
+    return context.answerCbQuery(MESSAGES.loading)
+        .then(() => $bot.editMessage(
+            context,
+            MESSAGES.rewards.join(''),
+            $bot.getKeyboard(BUTTONS.menuBack)
+        ))
 };
