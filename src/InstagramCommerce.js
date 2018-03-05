@@ -44,6 +44,7 @@ function InstagramCommerce(token) {
 
     this.reply = function(ctx, message, extra={}) {
         return ctx.reply(message, Object.assign(extra, Extra.markdown()))
+            .catch(console.error)
     };
 
     this.send = function (message, extra={}) {
@@ -55,6 +56,7 @@ function InstagramCommerce(token) {
 
     this.editMessage = function(ctx, message, extra={}) {
         return ctx.editMessageText(message, Object.assign(extra, Extra.markdown()))
+            .catch(console.error);
     }
 
     this.setChatId = setChatId;
@@ -93,25 +95,29 @@ function InstagramCommerce(token) {
     };
 
     this.action = function (match, middleware) {
-        bot.action.call(bot, match, function(context) {
-            var chatId = context.chat.id;
-            setChatId.call(_this, chatId);
-            setUser.call(_this, context.from);
+        try {
+            bot.action.call(bot, match, function(context) {
+                var chatId = context.chat.id;
+                setChatId.call(_this, chatId);
+                setUser.call(_this, context.from);
 
-            return middleware.call(_this, $api, context)
-        });
+                return middleware.call(_this, $api, context)
+            });
+        } catch(err) { console.error(err) }
 
         return this
     }
 
     this.hears = function (match, middleware) {
-        bot.hears.call(bot, match, function(context) {
-            var _chatId = context.chat.id;
-            setChatId.call(_this, _chatId);
-            setUser.call(_this, context.from);
+        try {
+            bot.hears.call(bot, match, function(context) {
+                var _chatId = context.chat.id;
+                setChatId.call(_this, _chatId);
+                setUser.call(_this, context.from);
 
-            return middleware.call(_this, $api, context)
-        });
+                return middleware.call(_this, $api, context)
+            });
+        } catch(err) { console.error(err) }
 
         return this
     }
@@ -129,7 +135,7 @@ function InstagramCommerce(token) {
         function _commandMiddleware(context, next) {
             var _chatId = context.chat.id;
             setChatId.call(_this, _chatId);
-            setUser.call(_this, context.from);console.log('user: %o', _this.$user);
+            setUser.call(_this, context.from);
 
             var opts = rule.exec(context.message.text);
 
