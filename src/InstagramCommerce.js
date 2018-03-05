@@ -16,6 +16,7 @@ function InstagramCommerce(token) {
     
     this.$chatId = null;
     this.$user = null;
+    this.$middlewareUri = 'localhost';
 
     this.on = function (event, action) {
         addEvent.call(registeredEvents, event, action);
@@ -122,9 +123,9 @@ function InstagramCommerce(token) {
         return this
     }
 
-    this.start = function (api) {
-
+    this.start = function (api, _middlewareUri=_this.middlewareUri) {
         $api = api;
+        _this.$middlewareUri = _middlewareUri;
 
         var rule = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]*)$/i;
 

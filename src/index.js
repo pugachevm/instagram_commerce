@@ -22,7 +22,8 @@ const DOMAIN = process.env.DOMAIN || 'instagram-commerce.herokuapp.com';
 const PORT = process.env.PORT || '3000';
 const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
 
-let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN);
+let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN),
+    middlewareUri = [ PROTO, '://', DOMAIN, ':', PORT ].join('');
 
 module.exports = function() {
     console.log('Connected to mLab');
@@ -44,13 +45,13 @@ module.exports = function() {
         .on('subscribe', onSubscribe)
         .on('subscribed', onSubscribed)
         .on('getChatId', onGetChatId)
-        .start(api.method);
+        .start(api.method, middlewareUri);
 
     // Run the Web-server
     App.call({
         sessionParser: sessionParser
     }, PROTO, DOMAIN, PORT,
-        (data) => $bot.emit('authorized', data),
+        data => $bot.emit('authorized', data),
         () => $bot.emit('subscribed')
     );
 };

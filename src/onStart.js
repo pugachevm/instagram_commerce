@@ -26,7 +26,13 @@ module.exports = function($api, chatId, context) {
                 .catch(err => console.error)
             }
 
-            $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn))
+            $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn.map(button => {
+                let { label, value } = button;
+
+                value = value.replace(/\$domain/i, $bot.$middlewareUri);console.log('Value: %o', value);
+
+                return { label, value }
+            })))
         });
 
     return $bot.reply(
