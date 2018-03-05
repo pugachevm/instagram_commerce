@@ -59,12 +59,13 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
 
 
     router.get('/', function (req, res) {
-        res.send('Hello ' + req.isAuthenticated());
+        res.writeHead(302, { 'Location': URL_SUBSCRIBE });
+        res.end();
     });
 
     router.get(URL_SUBSCRIBE, function(req, res) {
         subscribeCallback();
-        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/'});
+        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     })
 
@@ -74,10 +75,14 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
     });
 
     router.get(URL_AUTH_CALLBACK, passport.authenticate('instagram', { failureRedirect: URL_AUTH }), function (req, res) {
-
         console.log('Auth callback uri executed');
 
-        res.send('<script>window.close()</script>');
+        /*res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.write('<script>window.close()</script>');
+        res.end();*/
+        subscribeCallback();
+        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/'});
+        res.end();
     });
 
     router.get(URL_LOGOUT, function(req, res) {
