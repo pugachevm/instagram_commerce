@@ -18,8 +18,8 @@ let onStart = require('./onStart'),
     onGetChatId = require('./onGetChatId');
 
 const PROTO = process.env.PROTO || 'http';
-const DOMAIN = process.env.DOMAIN || 'instagram-commerce.herokuapp.com';
-const PORT = process.env.PORT || '3000';
+const DOMAIN = process.env.DOMAIN || 'pugachev-official.com';
+const PORT = process.env.PORT || '80';
 const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
 
 let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN),
