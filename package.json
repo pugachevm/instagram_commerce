@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start:prod": "yarn install && PROTO=https node index.js",
+    "start:prod": "yarn install && DOMAIN=pugachev-official.com PORT=80 node index.js",
     "start:dev": "DOMAIN=localhost node index.js"
   },
   "dependencies": {
