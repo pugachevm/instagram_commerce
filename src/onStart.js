@@ -13,6 +13,8 @@ module.exports = function($api, chatId, context) {
             firstName: userData.first_name,
             lastName: userData.last_name
         };
+    
+    $api.fetchFollowers();// automatically fetches the followers till the end :)
 
     $api.setChatId(user, chatId)
         .then((user) => {

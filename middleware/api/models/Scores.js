@@ -1,4 +1,4 @@
-var Utils = require('./utils');
+let Utils = require('./utils');
 
 module.exports = function(Schema) {
 
@@ -9,7 +9,9 @@ module.exports = function(Schema) {
     return new Schema({
         initAction: { type: Boolean },
         instagramSubscriptions: [Schema.Types.Mixed],
-        friendsInvitations: [(new Pointer('Users'))]
+        friendsInvitations: [(new Pointer('Users'))],
+        updatedAt: { type: Date, default: Date.now, required: true },
+        createdAt: { type: Date, default: Date.now, required: true }
     })
 
 }

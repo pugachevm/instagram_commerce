@@ -40,7 +40,6 @@ function setUserPoints(nickname, args) {
                                 !!masterId && (user.invitedBy = masterId);
         
                                 user.save((err) => {
-                                    console.log('End error: %o', err)
                                     if (!!err) { return reject(err) }
         
                                     return resolve(user)
@@ -121,7 +120,6 @@ function addPoints(scoreId, update) {
                 !!friend && !isHashExists(score.friendsInvitations, friend) && score.friendsInvitations.push(friend);
 
                 score.save((err) => {
-                    console.error('Error: %o', err);
                     if (!!err) { return reject(err) }
 
                     return resolve(score)

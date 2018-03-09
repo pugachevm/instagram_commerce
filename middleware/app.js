@@ -59,7 +59,7 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
 
 
     router.get('/', function (req, res) {
-        res.writeHead(302, { 'Location': URL_SUBSCRIBE });
+        //res.writeHead(302, { 'Location': URL_SUBSCRIBE });
         res.end();
     });
 

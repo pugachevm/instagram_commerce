@@ -1,0 +1,9 @@
+{
+    "getFollowersList": "https://www.instagram.com/graphql/query/",
+    "login": "https://www.instagram.com/accounts/login/",
+    "$query_hash": "37479f2b8209594dde7facb0d904896a",
+    "$id": 299938600,
+    "$fetcher": "pugachevmark",
+    "$username": "_puta.follower_",
+    "$password": "123pugachevm"
+}

@@ -3,5 +3,9 @@
     "setChatId",
     "updateUserData",
     "setUserPoints",
-    "getUserPoints"
+    "getUserPoints",
+    "fetchFollowers",
+    "checkSubscription",
+    "getUserData",
+    "updateFollower"
 ]

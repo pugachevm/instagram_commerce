@@ -3,7 +3,7 @@ var fs = require('fs');
 const BUTTONS = JSON.parse(fs.readFileSync('./src/buttons.json', 'utf-8'));
 const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 
-module.exports = function($api, data) {
+module.exports = function($api, data) {console.log('accessToken: %o', data);
 
     var $bot = this,
         accessToken = data.accessToken,

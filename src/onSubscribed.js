@@ -8,8 +8,11 @@ module.exports = function($api) {
         userData = $bot.getUser();console.log('$userData: %o', userData);
     
     $api.setUserPoints(userData.telegramNickname, { instagram: 'pugachevmark' })
-        .then((result) => {
-            console.log('Success!!!!!')
+        .then((user) => {
+            let { instagramId, instagramNickname } = user;
+
+            return $api.updateFollower({ instagramId, instagramNickname })
         })
+        .then(user => console.log)
         .catch(console.error)
 };

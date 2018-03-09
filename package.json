@@ -5,15 +5,19 @@
   },
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
     "connect-mongo": "^2.0.1",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "instagram-private-api": "^0.6.7",
     "mongo": "^0.1.0",
     "mongoose": "^5.0.4",
     "passport": "^0.4.0",
     "passport-instagram": "^1.0.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "telegraf": "^3.17.8",
     "util": "^0.10.3"
   }
