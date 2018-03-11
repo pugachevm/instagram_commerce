@@ -5,7 +5,7 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 
 module.exports = function($api) {
     let $bot = this,
-        userData = $bot.getUser();console.log('$userData: %o', userData);
+        userData = $bot.getUser();
     
     $api.setUserPoints(userData.telegramNickname, { instagram: 'pugachevmark' })
         .then((user) => {

@@ -4,18 +4,7 @@ let sessionParser = require('express-session'),
     Api = require('../middleware/api');
 
 // Telegram Bot methods requirements
-let onStart = require('./onStart'),
-    onMenuRequested = require('./onMenuRequested'),
-    onRulesRequested = require('./onRulesRequested'),
-    onPointsRequested = require('./onPointsRequested'),
-    onTopRequested = require('./onTopRequested'),
-    onRewardsRequested = require('./onRewardsRequested'),
-    onFriendInviteRequested = require('./onFriendInviteRequested')
-    onWhoAmI = require('./onWhoAmI')
-    onAuthorized = require('./onAuthorized'),
-    onSubscribe = require('./onSubscribe'),
-    onSubscribed = require('./onSubscribed'),
-    onGetChatId = require('./onGetChatId');
+let _onMenuRequested = require('./onMenuRequested');
 
 const PROTO = process.env.PROTO || 'http';
 const DOMAIN = process.env.DOMAIN || 'pugachev-official.com';
@@ -32,19 +21,19 @@ module.exports = function() {
 
     // Run Telegram Bot
     $bot
-        .on('/start', onStart)
-        .hears(/меню/i, onMenuRequested)
-        .action(':back', onMenuRequested)
-        .action(':rules', onRulesRequested)
-        .action(':points', onPointsRequested)
-        .action(':top@20', onTopRequested)
-        .action(':rewards', onRewardsRequested)
-        .action(':invite@friend', onFriendInviteRequested)
-        .action(':whoami', onWhoAmI)
-        .on('authorized', onAuthorized)
-        .on('subscribe', onSubscribe)
-        .on('subscribed', onSubscribed)
-        .on('getChatId', onGetChatId)
+        .on('/start', require('./onStart'))
+        .hears(/меню/i, _onMenuRequested)
+        .action(':back', _onMenuRequested)
+        .action(':rules', require('./onRulesRequested'))
+        .action(':points', require('./onPointsRequested'))
+        .action(':top@20', require('./onTopRequested'))
+        .action(':rewards', require('./onRewardsRequested'))
+        .action(':invite@friend', require('./onFriendInviteRequested'))
+        .action(':whoami', require('./onWhoAmI'))
+        .on('authorized', require('./onAuthorized'))
+        .on('subscribe', require('./onSubscribe'))
+        .on('subscribed', require('./onSubscribed'))
+        .on('getChatId', require('./onGetChatId'))
         .start(api.method, middlewareUri);
 
     // Run the Web-server

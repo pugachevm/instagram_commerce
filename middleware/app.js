@@ -2,6 +2,8 @@ var express = require('express'),
     passport = require('passport'),
     fs = require('fs'),
     util = require('util'),
+    path = require('path'),
+    serveStatic = require('serve-static'),
     cookie = require('cookie'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
@@ -81,7 +83,7 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
         res.write('<script>window.close()</script>');
         res.end();*/
         subscribeCallback();
-        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/'});
+        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     });
 
@@ -103,6 +105,8 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
     }));
     app.use(passport.initialize());
     app.use(passport.session());
+
+    app.use('/', (req, res, next) => { serveStatic(path.join(__dirname, 'static', 'public'), { 'index': [ 'index.html', 'index.htm' ] })(req, res, next) });
 
     app.use('/', router);
 

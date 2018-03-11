@@ -18,6 +18,7 @@
     "passport-instagram": "^1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
+    "serve-static": "^1.13.2",
     "telegraf": "^3.17.8",
     "util": "^0.10.3"
   }
