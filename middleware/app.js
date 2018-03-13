@@ -71,7 +71,7 @@ module.exports = function (proto, domain, port, callbacks) {
     });
 
     router.get(URL_SUBSCRIBE, function(req, res) {
-        checkSubscription(5, subscribe());
+        checkSubscription(subscribe);
         //res.sendFile([ STATIC_PRIVATE_STORAGE, 'subscribe', 'index.html' ].join('/'))
         res.writeHead(200, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
@@ -88,7 +88,7 @@ module.exports = function (proto, domain, port, callbacks) {
         /*res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('<script>window.close()</script>');
         res.end();*/
-        checkSubscription(5, subscribe());
+        checkSubscription(subscribe);
         res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     });
@@ -126,16 +126,11 @@ module.exports = function (proto, domain, port, callbacks) {
     }
 };
 
-function checkSubscription(i, callback) {
-
-    if(i <= 0) {
-        return
-    }
+function checkSubscription(callback) {
 
     let _to = setTimeout(function() {
         clearTimeout(_to);
 
         callback();
-        checkSubscription(--i, callback);
-    }, 15000);
+    }, 60000);
 }
