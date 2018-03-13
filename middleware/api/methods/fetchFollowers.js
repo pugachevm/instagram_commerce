@@ -14,7 +14,7 @@ module.exports = function(models) {
     return method(models, fetchFollowers)
 };
 
-function fetchFollowers() {
+function fetchFollowers(followUp) {
     let models = this,
         InstagramFollowers = models.InstagramFollowers,
         { $username, $password } = _wa,
@@ -26,7 +26,7 @@ function fetchFollowers() {
         return
     }
 
-    Client.Session.create(device, storage, $username, $password)
+    return Client.Session.create(device, storage, $username, $password)
         .then(function(session) {
             let { $query_hash, $id } = _wa,
                 update = updateFollower.bind(models);
@@ -35,12 +35,12 @@ function fetchFollowers() {
 
             let after = fs.readFileSync(CURSOR_FILENAME, 'utf-8');
 
-            return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after)
+            return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, followUp)
         })
         .catch(console.error)
 }
 
-function loadInstagramFollowers(query_hash, id, first=20, after=null) {
+function loadInstagramFollowers(query_hash, id, first=20, after=null, followUp=true) {
     let _this = this,
         { session, update } = this;
 
@@ -68,6 +68,10 @@ function loadInstagramFollowers(query_hash, id, first=20, after=null) {
             let { user } = data,
                 { count, edges, page_info } = user.edge_followed_by,
                 { has_next_page, end_cursor } = page_info;
+            
+            if(!followUp) {
+                return edges
+            }
             
             if(!has_next_page) {
                 return

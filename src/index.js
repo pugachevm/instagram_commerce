@@ -15,7 +15,7 @@ let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN),
     middlewareUri = [ PROTO, '://', DOMAIN, ':', PORT ].join('');
 
 module.exports = function() {
-    console.log('Connected to mLab');
+    console.info('Connected to mLab');
 
     var api = Api(this);
 
@@ -39,8 +39,8 @@ module.exports = function() {
     // Run the Web-server
     App.call({
         sessionParser: sessionParser
-    }, PROTO, DOMAIN, PORT,
-        data => $bot.emit('authorized', data),
-        () => $bot.emit('subscribed')
-    );
+    }, PROTO, DOMAIN, PORT, {
+        signIn: data => $bot.emit('authorized', data),
+        subscribe: () => $bot.emit('subscribed')
+    });
 };

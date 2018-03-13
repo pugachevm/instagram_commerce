@@ -4,7 +4,8 @@ module.exports = function(Schema) {
             return {
                 type: Schema.Types.ObjectId,
                 required: !!required,
-                ref: model
+                ref: model,
+                unique: true
             }
         }
     }

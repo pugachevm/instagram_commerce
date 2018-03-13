@@ -1,4 +1,4 @@
-var express = require('express'),
+let express = require('express'),
     passport = require('passport'),
     fs = require('fs'),
     util = require('util'),
@@ -9,11 +9,14 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     InstagramStrategy = require('passport-instagram').Strategy;
 
-var app = express(),
+let app = express(),
     router = express.Router();
 
-var CREDENTIALS = JSON.parse(fs.readFileSync('middleware/creds.json', 'utf-8')),
-    PATHMAP = JSON.parse(fs.readFileSync('middleware/path-map.json', 'utf-8'));
+const CREDENTIALS = JSON.parse(fs.readFileSync('middleware/creds.json', 'utf-8'));
+const PATHMAP = JSON.parse(fs.readFileSync('middleware/path-map.json', 'utf-8'));
+
+const STATIC_PUBLIC_STORAGE = path.join(__dirname, 'static', 'public');
+const STATIC_PRIVATE_STORAGE = path.join(__dirname, 'static', 'private');
 
 const INSTAGRAM_CLIENT_ID = CREDENTIALS.instagram_cliendId;
 const INSTAGRAM_CLIENT_SECRET = CREDENTIALS.instagram_token;
@@ -24,7 +27,9 @@ const URL_AUTH_CALLBACK = PATHMAP.signInCallback;
 const URL_SUBSCRIBE = PATHMAP.subscribe;
 const URL_SUBSCRIBE_CALLBACK = PATHMAP.subscribeCallback;
 
-module.exports = function (proto, domain, port, signInCallback, subscribeCallback) {
+module.exports = function (proto, domain, port, callbacks) {
+
+    let { signIn, subscribe } = callbacks;
 
     passport.serializeUser(function (user, done) {
         done(null, user);
@@ -51,7 +56,7 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
 
                 done(null, profile);
 
-                return signInCallback({
+                return signIn({
                     accessToken: accessToken,
                     profile: profile
                 })
@@ -66,10 +71,9 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
     });
 
     router.get(URL_SUBSCRIBE, function(req, res) {
-        subscribeCallback();
-        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
-        res.end();
-    })
+        //subscribe();
+        res.sendFile([ STATIC_PRIVATE_STORAGE, 'subscribe', 'index.html' ].join('/'))
+    });
 
     router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {
         // do
@@ -82,7 +86,7 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
         /*res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('<script>window.close()</script>');
         res.end();*/
-        subscribeCallback();
+        subscribe();
         res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     });
@@ -106,7 +110,7 @@ module.exports = function (proto, domain, port, signInCallback, subscribeCallbac
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.use('/', (req, res, next) => { serveStatic(path.join(__dirname, 'static', 'public'), { 'index': [ 'index.html', 'index.htm' ] })(req, res, next) });
+    app.use('/', (req, res, next) => { serveStatic(STATIC_PUBLIC_STORAGE, { 'index': [ 'index.html', 'index.htm' ] })(req, res, next) });
 
     app.use('/', router);
 

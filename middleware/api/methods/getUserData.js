@@ -14,6 +14,8 @@ function getUserData(telegramId) {
             .findOne({ telegramId }, function(err, user) {
                 if(!!err) { return reject(err) }
 
+                if(!!user == false) { return reject(new Error('User not found')) }
+
                 return resolve(user)
 
             })

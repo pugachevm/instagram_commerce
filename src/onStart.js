@@ -20,18 +20,27 @@ module.exports = function($api, chatId, context) {
         .then((user) => {
             let friend = stateData.args;
 
-            if(!!friend) {// && !!~stateData.args.indexOf(userData.username) == false) {
-                $api.setUserPoints(user.telegramNickname, { friend })
-                .then(user => {
-                    $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
-                })
-                .catch(err => console.error)
+            if(!!friend) {// && !!~friend.indexOf(userData.username) == false) {
+                $api.getUserData(user.telegramId)
+                    .then(user => {
+                        let { invitedBy } = user;
+
+                        if(!!invitedBy == false) {
+                            return $api.setUserPoints('isholohov'/*user.telegramNickname*/, { friend })
+                                .then(user => {
+                                    $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
+                                })
+                        }
+
+                        return $bot.send(MESSAGES.alreadyInvited)
+                    })
+                    .catch(console.error)
             }
 
             $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn.map(button => {
                 let { label, value } = button;
 
-                value = value.replace(/\$domain/i, $bot.$middlewareUri);console.log('Value: %o', value);
+                value = value.replace(/\$domain/i, $bot.$middlewareUri);
 
                 return { label, value }
             })))

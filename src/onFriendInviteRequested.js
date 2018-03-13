@@ -8,8 +8,9 @@ module.exports = function($api, context) {
     let $bot = this,
         markup = Extra.markdown(),
         userData = context.from,
-        _invitationLink = 'https://telegram.me/pugachevs_bot?start=$user'.replace(/\$user/i, userData.username);
+        _invitationLink = 'https://telegram.me/pugachevs_bot?start=$user'.replace(/\$user/g, userData.username);
         //'tg://resolve?domain=pugachevs_bot&start=$user'.replace(/\$user/g, userData.username);
+        console.log(_invitationLink)
     
     return context.answerCbQuery(MESSAGES.loading)
         .then(() => $bot.editMessage(
