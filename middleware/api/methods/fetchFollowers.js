@@ -34,6 +34,7 @@ function fetchFollowers(followUp) {
             fs.writeFileSync(FETCH_FILENAME, +(new Date()) + UPDATE_TIMEOUT);
 
             let after = fs.readFileSync(CURSOR_FILENAME, 'utf-8');
+            after = !!after ? after : null;
 
             return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, followUp)
         })

@@ -2,7 +2,7 @@ let method = require('./method');
 
 module.exports = (models) => {
     return method(models, setChatId)
-}
+};
 
 function setChatId(userData, chatId) {
     let models = this,

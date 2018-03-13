@@ -3,7 +3,7 @@ let method = require('./method'),
 
 module.exports = (models) => {
     return method(models, setUserPoints)
-}
+};
 
 function setUserPoints(nickname, args) {
     let models = this,
@@ -53,18 +53,6 @@ function setUserPoints(nickname, args) {
     })
 }
 
-function mergeSubscriptions(subscriptions, newSubscription) {
-    if (!!newSubscription == false) {
-        return subscriptions || []
-    }
-
-    if (!!subscriptions == false) {
-        return [].push(newSubscription)
-    }
-
-    return subscriptions.push(newSubscription)
-}
-
 function findMaster(query, invitedId) {
     let { Users, Scores } = this;
 
@@ -104,26 +92,23 @@ function findMaster(query, invitedId) {
 function addPoints(scoreId, update) {
     let { Scores } = this,
         { friend, instagram } = update,
-        query = !!scoreId ? { _id: scoreId } : {};
+        query = { _id: scoreId },
+        defaultScore = { initAction: true, instagramSubscriptions: [], friendsInvitations: [] };
 
     return new Promise(function(resolve, reject) {
         Scores.findOne(query, function(err, score) {
             if (!!err) { return reject(err) }
 
-            Scores.populate(score, { path: 'friendsInvitations', model: 'Users' }, function(err, score) {
+            score = !!score ? score : new Scores(defaultScore);
+
+            score.initAction = true;
+            !!instagram && !isHashExists(score.instagramSubscriptions, instagram) && score.instagramSubscriptions.push(instagram);
+            !!friend && !isHashExists(score.friendsInvitations, friend._id) && score.friendsInvitations.push(friend);
+
+            score.save(function(err) {
                 if (!!err) { return reject(err) }
 
-                score = !!score ? score : new Scores();
-
-                score.initAction = true;
-                !!instagram && !isHashExists(score.instagramSubscriptions, instagram) && score.instagramSubscriptions.push(instagram);
-                !!friend && !isHashExists(score.friendsInvitations, friend) && score.friendsInvitations.push(friend);
-
-                score.save(function(err) {
-                    if (!!err) { return reject(err) }
-
-                    return resolve(score)
-                })
+                return resolve(score)
             })
         })
     })

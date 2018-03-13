@@ -26,7 +26,7 @@ module.exports = function($api, chatId, context) {
                         let { invitedBy } = user;
 
                         if(!!invitedBy == false) {
-                            return $api.setUserPoints('isholohov'/*user.telegramNickname*/, { friend })
+                            return $api.setUserPoints('tupitoo'/*user.telegramNickname*/, { friend })
                                 .then(user => {
                                     $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
                                 })
