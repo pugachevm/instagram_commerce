@@ -17,7 +17,9 @@ let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN),
 module.exports = function() {
     console.info('Connected to mLab');
 
-    var api = Api(this);
+    let api = Api(this);
+
+    fetchLoop(api.method);// automatically fetches the followers till the end :)
 
     // Run Telegram Bot
     $bot
@@ -44,3 +46,16 @@ module.exports = function() {
         subscribe: () => $bot.emit('subscribed')
     });
 };
+
+function fetchLoop($api)
+{
+    const LOOP_TIMEOUT = 3600 * 24 * (1/48);
+
+    let _to = setTimeout(function() {
+        clearTimeout(_to);
+
+        $api.fetchFollowers();
+
+        fetchLoop($api);
+    }, LOOP_TIMEOUT);
+}

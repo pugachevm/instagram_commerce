@@ -71,8 +71,10 @@ module.exports = function (proto, domain, port, callbacks) {
     });
 
     router.get(URL_SUBSCRIBE, function(req, res) {
-        //subscribe();
-        res.sendFile([ STATIC_PRIVATE_STORAGE, 'subscribe', 'index.html' ].join('/'))
+        checkSubscription(5, subscribe());
+        //res.sendFile([ STATIC_PRIVATE_STORAGE, 'subscribe', 'index.html' ].join('/'))
+        res.writeHead(200, { 'Location': 'https://www.instagram.com/pugachevmark/' });
+        res.end();
     });
 
     router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {
@@ -86,7 +88,7 @@ module.exports = function (proto, domain, port, callbacks) {
         /*res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('<script>window.close()</script>');
         res.end();*/
-        subscribe();
+        checkSubscription(5, subscribe());
         res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     });
@@ -123,3 +125,17 @@ module.exports = function (proto, domain, port, callbacks) {
         res.redirect('/login')
     }
 };
+
+function checkSubscription(i, callback) {
+
+    if(i <= 0) {
+        return
+    }
+
+    let _to = setTimeout(function() {
+        clearTimeout(_to);
+
+        callback();
+        checkSubscription(--i, callback);
+    }, 15000);
+}

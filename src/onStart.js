@@ -13,8 +13,6 @@ module.exports = function($api, chatId, context) {
             firstName: userData.first_name,
             lastName: userData.last_name
         };
-    
-    $api.fetchFollowers();// automatically fetches the followers till the end :)
 
     $api.setChatId(user, chatId)
         .then((user) => {
@@ -26,7 +24,7 @@ module.exports = function($api, chatId, context) {
                         let { invitedBy } = user;
 
                         if(!!invitedBy == false) {
-                            return $api.setUserPoints('tupitoo'/*user.telegramNickname*/, { friend })
+                            return $api.setUserPoints(user.telegramNickname, { friend })
                                 .then(user => {
                                     $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
                                 })
@@ -51,5 +49,4 @@ module.exports = function($api, chatId, context) {
         MESSAGES.start,
         $bot.getKeyboard(BUTTONS.callMenu, 'static')
     )
-
 };

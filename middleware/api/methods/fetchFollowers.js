@@ -8,16 +8,17 @@ let method = require('./method'),
 
 const FETCH_FILENAME = [ __dirname, '.fetch.timestamp' ].join('/');
 const CURSOR_FILENAME = [ __dirname, '.fetch.token' ].join('/');
-const UPDATE_TIMEOUT = (3600 * 24 * 0.5 * 1000);
+const UPDATE_TIMEOUT = (3600 * 24 * (1/24) * 1000);
 
 module.exports = function(models) {
     return method(models, fetchFollowers)
 };
 
-function fetchFollowers(followUp) {
+function fetchFollowers(followUp=true, after=null) {
     let models = this,
         InstagramFollowers = models.InstagramFollowers,
-        { $username, $password } = _wa,
+        $username = !!followUp ? _wa.$username : _wa.$strangername,
+        $password = _wa.$password,
         device = new Client.Device($username),
         storage = new Client.CookieFileStorage(__dirname + '/cookies/'+ $username +'.json');
 
@@ -30,11 +31,17 @@ function fetchFollowers(followUp) {
         .then(function(session) {
             let { $query_hash, $id } = _wa,
                 update = updateFollower.bind(models);
+
+            if(!followUp && !!after) {
+                return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, false)
+            }
             
             fs.writeFileSync(FETCH_FILENAME, +(new Date()) + UPDATE_TIMEOUT);
 
-            let after = fs.readFileSync(CURSOR_FILENAME, 'utf-8');
+            try { after = fs.readFileSync(CURSOR_FILENAME, 'utf-8') } catch(e) { console.error(e) }
             after = !!after ? after : null;
+
+            console.log('Fetching started from: %o', after);
 
             return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, followUp)
         })
@@ -87,9 +94,10 @@ function loadInstagramFollowers(query_hash, id, first=20, after=null, followUp=t
                 
                 update({
                     instagramId: user.id,
-                    instagramNickname: user.username
+                    instagramNickname: user.username,
+                    cursor: after
                 })
-            })
+            });
 
             return !!after
                 ? loadInstagramFollowers.call(_this, query_hash, id, first, after)

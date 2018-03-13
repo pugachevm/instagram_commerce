@@ -2,7 +2,7 @@ let Utils = require('./utils');
 
 module.exports = function(Schema) {
 
-    utils = Utils(Schema);
+    let utils = Utils(Schema);
 
     const Pointer = utils.Pointer;
 
