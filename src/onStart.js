@@ -18,7 +18,7 @@ module.exports = function($api, chatId, context) {
         .then((user) => {
             let friend = stateData.args;
 
-            if(!!friend) {// && !!~friend.indexOf(userData.username) == false) {
+            if(!!friend && !!~friend.indexOf(friend) == false) {
                 $api.getUserData(user.telegramId)
                     .then(user => {
                         let { invitedBy } = user;

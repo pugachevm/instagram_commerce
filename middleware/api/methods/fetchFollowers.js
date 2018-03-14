@@ -20,17 +20,17 @@ function fetchFollowers(followUp=true, after=null) {
         $username = !!followUp ? _wa.$username : _wa.$strangername,
         $password = _wa.$password,
         device = new Client.Device($username),
-        storage = new Client.CookieFileStorage(__dirname + '/cookies/'+ $username +'.json');
+        storage = new Client.CookieFileStorage(__dirname + '/cookies/'+ $username +'.json'),
+        update = updateFollower(models);
 
 
-    if(new Date() < new Date(+fs.readFileSync(FETCH_FILENAME, 'utf-8'))) {
+    /*if(new Date() < new Date(+fs.readFileSync(FETCH_FILENAME, 'utf-8'))) {
         return
-    }
+    }*/
 
     return Client.Session.create(device, storage, $username, $password)
         .then(function(session) {
-            let { $query_hash, $id } = _wa,
-                update = updateFollower.bind(models);
+            let { $query_hash, $id } = _wa;
 
             if(!followUp && !!after) {
                 return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, false)
@@ -67,7 +67,9 @@ function loadInstagramFollowers(query_hash, id, first=20, after=null, followUp=t
 
             body = JSON.parse(body);
 
-            let { data, status } = body;console.log('status: %o', status);
+            let { data, status } = body;
+
+            console.log('\x1b[33m%s\x1b[0m %o', 'status:', status);
 
             if(status != 'ok') {
                 return
@@ -76,34 +78,48 @@ function loadInstagramFollowers(query_hash, id, first=20, after=null, followUp=t
             let { user } = data,
                 { count, edges, page_info } = user.edge_followed_by,
                 { has_next_page, end_cursor } = page_info;
+
+            after = !!has_next_page ? end_cursor : null;
+
+            fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
             
             if(!followUp) {
                 return edges
             }
-            
-            if(!has_next_page) {
-                return
-            }
-            
-            after = has_next_page ? end_cursor : null;
-
-            fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
 
             edges.forEach((node, i) => {
                 let user = node.node;
-                
-                update({
-                    instagramId: user.id,
-                    instagramNickname: user.username,
-                    cursor: after
-                })
+
+                if(!!user && !!user.id && !!user.username) {
+                    update({
+                        instagramId: user.id,
+                        instagramNickname: user.username,
+                        cursor: after
+                    })
+                        .catch(e => {});//console.error('\x1b[31m%s\x1b[0m', e))
+                }
             });
 
             return !!after
                 ? loadInstagramFollowers.call(_this, query_hash, id, first, after)
                 : false
         })
-        .catch(console.error)
+        .catch(res => {
+            let { body, headers } = res;
+
+            if(!!body == false) {
+                return false
+            }
+
+            body = JSON.parse(body);
+
+            let { message, status } = body;
+
+            console.log('\x1b[31m%s\x1b[0m %o', 'message', message);
+            console.log('\x1b[33m%s\x1b[0m %o', 'status:', status);
+
+            return false
+        })
 }
 
 Client.Web.Request.prototype.setGraphQlResource = function(query_hash, variables) {

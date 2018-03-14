@@ -9,4 +9,4 @@ module.exports = function(mongoose) {
         _Schema: Schema
     }
 
-}
+};

@@ -17,6 +17,7 @@ module.exports = function(Schema) {
         scores: (new Pointer('Scores')),
         invitedBy: (new Pointer('Users')),
         chatId: { type: Number, unique: true },
+        preCountedPoints: { type: Number, default: 0 },
         updatedAt: { type: Date, default: Date.now, required: true },
         createdAt: { type: Date, default: Date.now, required: true }
     })

@@ -58,7 +58,7 @@ function InstagramCommerce(token) {
     this.editMessage = function(ctx, message, extra={}) {
         return ctx.editMessageText(message, Object.assign(extra, Extra.markdown()))
             .catch(console.error);
-    }
+    };
 
     this.setChatId = setChatId;
 
@@ -107,7 +107,7 @@ function InstagramCommerce(token) {
         } catch(err) { console.error(err) }
 
         return this
-    }
+    };
 
     this.hears = function (match, middleware) {
         try {
@@ -121,7 +121,7 @@ function InstagramCommerce(token) {
         } catch(err) { console.error(err) }
 
         return this
-    }
+    };
 
     this.start = function (api, _middlewareUri=_this.middlewareUri) {
         $api = api;
@@ -152,7 +152,7 @@ function InstagramCommerce(token) {
 
             context.state.data = data;
 
-            _this.emit(['/', command].join(''), _chatId, context)
+            _this.emit(['/', command].join(''), _chatId, context);
 
             return next()
         }

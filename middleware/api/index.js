@@ -11,4 +11,4 @@ module.exports = function(mongoose, PROTO, DOMAIN, PORT) {
         method: methods
     }
 
-}
+};

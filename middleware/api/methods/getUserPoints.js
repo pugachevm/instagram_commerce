@@ -16,7 +16,7 @@ function getUserPoints(userData) {
             .exec((err, user) => {
                 if(!!err) { return reject(err) }
 
-                if(!!user.scores == false) { return reject(null)}
+                if(!!user == false || !!user.scores == false) { return reject(null)}
 
                 return resolve(user.scores)
 

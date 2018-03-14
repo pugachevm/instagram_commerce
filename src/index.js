@@ -9,13 +9,13 @@ let _onMenuRequested = require('./onMenuRequested');
 const PROTO = process.env.PROTO || 'http';
 const DOMAIN = process.env.DOMAIN || 'pugachev-official.com';
 const PORT = process.env.PORT || '80';
-const TELEGRAM_BOT_TOKEN = '533313892:AAEy2L5RXz5fQFfoHmIRx7tpKwBOru7bOnA';
+const TELEGRAM_BOT_TOKEN = Buffer.from('NTMzMzEzODkyOkFBRXkyTDVSWHo1ZlFGZm9IbUlSeDd0cEt3Qk9ydTdiT25B', 'base64');
 
 let $bot = new InstagramCommerce(TELEGRAM_BOT_TOKEN),
     middlewareUri = [ PROTO, '://', DOMAIN, ':', PORT ].join('');
 
 module.exports = function() {
-    console.info('Connected to mLab');
+    console.info('\x1b[33m%s\x1b[0m', 'Connected to mLab');
 
     let api = Api(this);
 
@@ -49,7 +49,7 @@ module.exports = function() {
 
 function fetchLoop($api)
 {
-    const LOOP_TIMEOUT = 3600 * 24 * (1/48);
+    const LOOP_TIMEOUT = 3600 * 24 * (1/1440) * 1000;//(1/288) * 1000;
 
     let _to = setTimeout(function() {
         clearTimeout(_to);

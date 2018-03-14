@@ -6,10 +6,10 @@ module.exports = function(models) {
 
     methodsList.forEach(function(method) {
         methods[method] = includeMethod(method, models)
-    })
+    });
 
     return methods
-}
+};
 
 function includeMethod(name, models) {
     return require(['.', name].join('/'))(models)
