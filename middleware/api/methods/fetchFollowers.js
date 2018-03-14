@@ -30,10 +30,11 @@ function fetchFollowers(followUp=true, after=null) {
 
     return Client.Session.create(device, storage, $username, $password)
         .then(function(session) {
-            let { $query_hash, $id } = _wa;
+            let { $query_hash, $id } = _wa,
+                count = 5000;
 
             if(!followUp && !!after) {
-                return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, false)
+                return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, false)
             }
             
             fs.writeFileSync(FETCH_FILENAME, +(new Date()) + UPDATE_TIMEOUT);
@@ -43,12 +44,12 @@ function fetchFollowers(followUp=true, after=null) {
 
             console.log('Fetching started from: %o', after);
 
-            return loadInstagramFollowers.call({ session, update }, $query_hash, $id, 20, after, followUp)
+            return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, followUp)
         })
         .catch(console.error)
 }
 
-function loadInstagramFollowers(query_hash, id, first=20, after=null, followUp=true) {
+function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp=true) {
     let _this = this,
         { session, update } = this;
 
@@ -82,7 +83,7 @@ function loadInstagramFollowers(query_hash, id, first=20, after=null, followUp=t
             after = !!has_next_page ? end_cursor : null;
 
             fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
-            
+
             if(!followUp) {
                 return edges
             }

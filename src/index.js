@@ -49,7 +49,7 @@ module.exports = function() {
 
 function fetchLoop($api)
 {
-    const LOOP_TIMEOUT = 3600 * 24 * (1/1440) * 1000;//(1/288) * 1000;
+    const LOOP_TIMEOUT = 3600 * 24 * (1/1440) * 1000;// = 5 mins
 
     let _to = setTimeout(function() {
         clearTimeout(_to);
