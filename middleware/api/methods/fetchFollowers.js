@@ -6,8 +6,8 @@ let method = require('./method'),
     _wa = JSON.parse(fs.readFileSync('./src/workarounds.json', 'utf-8'));
 
 
-const FETCH_FILENAME = [ __dirname, '.fetch.timestamp' ].join('/');
-const CURSOR_FILENAME = [ __dirname, '.fetch.token' ].join('/');
+const FETCH_FILENAME = [ __dirname, 'fetch.timestamp' ].join('/');
+const CURSOR_FILENAME = [ __dirname, 'fetch.token' ].join('/');
 const UPDATE_TIMEOUT = (3600 * 24 * (1/24) * 1000);
 
 module.exports = function(models) {
