@@ -28,7 +28,7 @@ function fetchLoop($api)
     let _to = setTimeout(function() {
         clearTimeout(_to);
 
-        $api.fetchFollowers();
+        $api.fetchFollowers(false);
 
         fetchLoop($api);
     }, LOOP_TIMEOUT);
