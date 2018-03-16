@@ -19,8 +19,6 @@ module.exports = function() {
 
     let api = Api(this);
 
-    fetchLoop(api.method);// automatically fetches the followers till the end :)
-
     // Run Telegram Bot
     $bot
         .on('/start', require('./onStart'))

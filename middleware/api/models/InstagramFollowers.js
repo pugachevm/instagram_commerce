@@ -6,12 +6,20 @@ module.exports = function(Schema) {
 
     const Pointer = utils.Pointer;
 
-    return new Schema({
+    let InstagramFollowers = new Schema({
         instagramId: { type: Number, unique: true },
         instagramNickname: { type: String },
-        cursor: { type:String },
+        cursor: { type: String },
         updatedAt: { type: Date, default: Date.now, required: true },
         createdAt: { type: Date, default: Date.now, required: true }
-    })
+    });
+
+    InstagramFollowers.pre('save', (next) => {
+        this.updatedAt = Date.now();
+
+        next()
+    });
+
+    return InstagramFollowers
 
 };

@@ -37,7 +37,7 @@ function fetchFollowers(followUp=true, after=null) {
                 return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, false)
             }
             
-            fs.writeFileSync(FETCH_FILENAME, +(new Date()) + UPDATE_TIMEOUT);
+            fs.writeFileSync(FETCH_FILENAME, +(new Date()));
 
             try { after = fs.readFileSync(CURSOR_FILENAME, 'utf-8') } catch(e) { console.error(e) }
             after = !!after ? after : null;
@@ -80,7 +80,9 @@ function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp
                 { count, edges, page_info } = user.edge_followed_by,
                 { has_next_page, end_cursor } = page_info;
 
-            after = !!has_next_page ? end_cursor : null;
+            console.log('next_page: %o', has_next_page);
+
+            after = !!has_next_page ? end_cursor : '';
 
             fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
 
