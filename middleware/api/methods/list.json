@@ -7,5 +7,6 @@
     "fetchFollowers",
     "checkSubscription",
     "getUserData",
-    "updateFollower"
+    "updateFollower",
+    "removeInstagramSubscription"
 ]
