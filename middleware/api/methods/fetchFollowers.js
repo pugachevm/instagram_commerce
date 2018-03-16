@@ -33,7 +33,7 @@ function fetchFollowers(followUp=true, after=null) {
             let { $query_hash, $id } = _wa,
                 count = 5000;
 
-            if(!followUp && !!after) {
+            if(!followUp) {
                 return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, false)
             }
             
@@ -86,10 +86,6 @@ function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp
 
             fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
 
-            if(!followUp) {
-                return edges
-            }
-
             edges.forEach((node, i) => {
                 let user = node.node;
 
@@ -97,14 +93,19 @@ function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp
                     update({
                         instagramId: user.id,
                         instagramNickname: user.username,
-                        cursor: after
+                        cursor: after,
+                        updatedAt: +(new Date())
                     })
                         .catch(e => {});//console.error('\x1b[31m%s\x1b[0m', e))
                 }
             });
 
+            if(!followUp) {
+                return edges
+            }
+
             return !!after
-                ? loadInstagramFollowers.call(_this, query_hash, id, first, after)
+                ? setTimeout(() => { loadInstagramFollowers.call(_this, query_hash, id, first, after) }, 7200)
                 : false
         })
         .catch(res => {
