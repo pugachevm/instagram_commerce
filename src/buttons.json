@@ -2,6 +2,9 @@
     "callMenu": [
         { "label": "Меню", "value": "" }
     ],
+    "callAmSubscribed": [
+        { "label": "Я подписался", "value": ""}
+    ],
     "menu": [
         { "label": "Правила конкурса", "value": ":rules" },
         { "label": "Мои Баллы", "value": ":points" },

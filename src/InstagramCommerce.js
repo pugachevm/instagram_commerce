@@ -116,7 +116,7 @@ function InstagramCommerce(token) {
                 setChatId.call(_this, _chatId);
                 setUser.call(_this, context.from);
 
-                return middleware.call(_this, $api, context)
+                return middleware.call(_this, $api, context, match)
             });
         } catch(err) { console.error(err) }
 

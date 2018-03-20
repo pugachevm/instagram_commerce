@@ -34,6 +34,7 @@ function fetchFollowers(followUp=true, after=null) {
                 count = 5000;
 
             if(!followUp) {
+                count = 1000;
                 return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, false)
             }
             

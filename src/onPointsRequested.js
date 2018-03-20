@@ -1,11 +1,16 @@
-let fs = require('fs');
+let fs = require('fs'),
+    constants = require('../middleware/api/constants');
+
+/*const {
+    REWARD_FOR_INIT,
+    REWARD_FOR_INSTAGRAM,
+    REWARD_FOR_INVITATION_INIT,
+    REWARD_FOR_INIVITATION_INSTAGRAM,
+    REWARD_FOR_INVITATION_AMOUNT
+} = constants;*/
 
 const BUTTONS = JSON.parse(fs.readFileSync('./src/buttons.json', 'utf-8'));
 const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
-
-const POINT_INIT_ACTION = 1;
-const POINT_INSTAGRAM_SUBSCRIPTION = 3;
-const POINT_FRIEND_SUBSCRIPTION = 2;
 
 module.exports = function($api, context) {
     let $bot = this,
@@ -15,27 +20,26 @@ module.exports = function($api, context) {
     return context.answerCbQuery(MESSAGES.loading)
         .then(() => {
             $api.getUserPoints({ telegramNickname: username })
-                .then((scores) => {
-                    let $message = [ MESSAGES.points.title ],
+                .then((points) => {
+                    let $message = MESSAGES.points.rows,
                         $done = MESSAGES.points.done,
                         $pending = MESSAGES.points.pending,
-                        { instagramSubscriptions, friendsInvitations, initAction } = scores,
-                        summary = 0;
+                        _preCountedPoints = 0,
+                        replacements = {
+                            $signup: points.initAction,
+                            $instagramSubscriptions: points.instagramSubscriptions,
+                            $friendsInvitations: points.friendsInvitations,
+                            $bonus: points.returnable,
+                            $preCountedPoints: _preCountedPoints
+                        };
+
+                    console.log(points);
+
+                    Object.keys(points).forEach(key => replacements.$preCountedPoints += points[key]);
                     
-                    if(initAction) {
-                        summary += POINT_INIT_ACTION;
-                    }
-
-                    let instagramPoints = instagramSubscriptions.length * POINT_INSTAGRAM_SUBSCRIPTION,
-                        friendsPoints = friendsInvitations.length * POINT_FRIEND_SUBSCRIPTION;
-
-                    summary += instagramPoints > 0 ? instagramPoints : 0;
-                    summary += friendsPoints > 0 ? friendsPoints : 0;
-
-                    $message.push(MESSAGES.points.initAction.replace(/\$state/i, (initAction ? $done : $pending)));
-                    $message.push(MESSAGES.points.instagram[0].replace(/\$state/i, (instagramSubscriptions.length ? $done : $pending)));
-                    $message.push(MESSAGES.points.friends.replace(/\$friendsPoints/i, friendsPoints));
-                    $message.push(MESSAGES.points.total.replace(/\$points/i, summary));
+                    $message = $message.map(item => {
+                        return item.replace(new RegExp(Object.keys(replacements).map(key => key.replace(/\$/i, '\\$')).join('|'), 'ig'), key => '+' + replacements[key])
+                    });
 
                     $bot.editMessage(
                         context,

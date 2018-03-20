@@ -22,7 +22,7 @@ module.exports = function() {
     // Run Telegram Bot
     $bot
         .on('/start', require('./onStart'))
-        .hears(/меню/i, _onMenuRequested)
+        .hears(/я\sподписался|меню/ig, _onMenuRequested)
         .action(':back', _onMenuRequested)
         .action(':rules', require('./onRulesRequested'))
         .action(':points', require('./onPointsRequested'))
@@ -40,8 +40,7 @@ module.exports = function() {
     App.call({
         sessionParser: sessionParser
     }, PROTO, DOMAIN, PORT, {
-        signIn: data => $bot.emit('authorized', data),
-        subscribe: () => $bot.emit('subscribed')
+        signIn: data => $bot.emit('authorized', data)
     });
 };
 
