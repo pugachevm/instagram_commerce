@@ -19,27 +19,25 @@ module.exports = function($api, context, match={}) {
     switch (match.lastIndex) {
         case menuModifiers.subscribed.length:
 
-            context.answerCbQuery(MESSAGES.loading).then(() => {
-                return $api.getUserData(context.from.id)
-                    .then(user => {
-                        let { instagramNickname } = user;
+            return $api.getUserData(context.from.id)
+                .then(user => {
+                    let { instagramNickname } = user;
 
-                        return $api.checkSubscription(instagramNickname, true)
-                    })
-                    .then(isSubscribed => {
-                        if(isSubscribed) {
-                            $menu = $bot.getKeyboard(BUTTONS.menu);
-                            $menuMessage = MESSAGES.menuRequested;
-                        }
+                    return $api.checkSubscription(instagramNickname, true)
+                })
+                .then(isSubscribed => {
+                    if(isSubscribed) {
+                        $menu = $bot.getKeyboard(BUTTONS.menu);
+                        $menuMessage = MESSAGES.menuRequested;
+                    }
 
-                        return $bot.reply(
-                            context,
-                            MESSAGES.subscribed,
-                            $bot.getKeyboard(BUTTONS.callMenu, 'static')
-                        )
-                    })
-                    .catch(console.error);
-            });
+                    return $bot.reply(
+                        context,
+                        MESSAGES.subscribed,
+                        $bot.getKeyboard(BUTTONS.callMenu, 'static')
+                    )
+                })
+                .catch(console.error);
             break;
 
         default:
