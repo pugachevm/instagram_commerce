@@ -10,14 +10,13 @@ function setChatId(userData, chatId) {
 
     return new Promise(function (resolve, reject) {
 
-        let query = { chatId: chatId };
+        let query = { chatId };
 
-        Users.findOneAndUpdate(userData, query, { upsert: true }, (err, user) => {
+        Users.findOneAndUpdate(query, userData, { upsert: true }, (err, user) => {
             if (!!err) { return reject(err) }
 
             if (!!user == false) {
-                userData = Object.assign(userData, query);
-                user = new Users(userData);
+                user = new Users(Object.assign(userData, query));
             }
 
             user.save(function (err) {

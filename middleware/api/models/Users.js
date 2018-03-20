@@ -8,7 +8,7 @@ module.exports = function(Schema) {
 
     return new Schema({
         telegramId: { type: Number, unique: true },
-        instagramId: { type: Number, unique: true },
+        instagramId: { type: Number },
         telegramNickname: { type: String },
         instagramNickname: { type: String },
         firstName: { type:String },

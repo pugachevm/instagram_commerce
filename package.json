@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start:prod": "yarn install && DOMAIN=pugachev-official.com PORT=80 node index.js",
-    "start:dev": "set DOMAIN=127.0.0.1&& set PORT=3000&& node index.js"
+    "start:dev:win": "set DOMAIN=127.0.0.1&& set PORT=3000&& node index.js",
+    "start:dev": "DOMAIN=127.0.0.1 PORT=3000 node index.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
