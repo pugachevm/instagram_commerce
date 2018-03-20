@@ -19,7 +19,12 @@ function setUserPoints(nickname, args) {
 
             if (!!user == false) { return reject(new Error('User not found')) }
 
-            let { friend, instagram } = args;
+            let { friend, instagram } = args,
+                { invitedBy } = user;
+            
+            if(!!invitedBy) {
+                friend = null;
+            }
 
             Users.populate(user, { path: 'scores', model: 'Scores' }, function (err, user) {
                 if (!!err) { return reject(err) }
