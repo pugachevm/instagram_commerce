@@ -1,14 +1,17 @@
 let method = require('./method'),
     fs = require('fs'),
+    rp = require('request-promise'),
+    getRandomInt = require('../../../utils/randomInt'),
     Client = require('instagram-private-api').V1,
-    updateFollower = require('./updateFollower'),
+    _updateFollower = require('./updateFollower'),
     querystring = require('querystring'),
-    _wa = JSON.parse(fs.readFileSync('./src/workarounds.json', 'utf-8'));
+    _wa = JSON.parse(fs.readFileSync('./src/workarounds.json', 'utf-8')),
+    Agent = require('socks5-http-client/lib/Agent');
 
 
 const FETCH_FILENAME = [ __dirname, 'fetch.timestamp' ].join('/');
 const CURSOR_FILENAME = [ __dirname, 'fetch.token' ].join('/');
-const UPDATE_TIMEOUT = (3600 * 24 * (1/24) * 1000);
+const UPDATE_TIMEOUT = 7.2 * 1000 + getRandomInt(129, 9210);
 
 module.exports = function(models) {
     return method(models, fetchFollowers)
@@ -16,38 +19,75 @@ module.exports = function(models) {
 
 function fetchFollowers(followUp=true, after=null) {
     let models = this,
-        InstagramFollowers = models.InstagramFollowers,
         $username = !!followUp ? _wa.$username : _wa.$strangername,
         $password = _wa.$password,
         device = new Client.Device($username),
-        storage = new Client.CookieFileStorage(__dirname + '/cookies/'+ $username +'.json'),
-        update = updateFollower(models);
+        storage = new Client.CookieFileStorage(__dirname + '/cookies/'+ $username +'.json');
 
+    return loginAndFollow.call(this, device, storage, $username, $password, followUp, after)
+}
 
-    /*if(new Date() < new Date(+fs.readFileSync(FETCH_FILENAME, 'utf-8'))) {
-        return
-    }*/
+function loginAndFollow(device, storage, username, password, followUp, after) {
+    let models = this,
+        updateFollower = _updateFollower(models),
+        _getProxyUrl = _wa.getProxy;
 
-    return Client.Session.create(device, storage, $username, $password)
-        .then(function(session) {
-            let { $query_hash, $id } = _wa,
-                count = 5000;
-
-            if(!followUp) {
-                count = 1000;
-                return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, false)
-            }
-            
-            fs.writeFileSync(FETCH_FILENAME, +(new Date()));
-
-            try { after = fs.readFileSync(CURSOR_FILENAME, 'utf-8') } catch(e) { console.error(e) }
-            after = !!after ? after : null;
-
-            console.log('Fetching started from: %o', after);
-
-            return loadInstagramFollowers.call({ session, update }, $query_hash, $id, count, after, followUp)
+    return rp({
+        uri: _getProxyUrl,
+        json: true
+    })
+        .then(data => {
+            let { ip, port } = data;
+            return { host: ip, port }
+        })
+        .then(proxy => {
+            let { host, port } = proxy;
+            console.log('Proxy: %o', proxy);
+            return rp({
+                uri:'http://pugachev-official.com/test',
+                agentClass: Agent,
+                agentOptions: {
+                    socksHost: host,
+                    socksPort: port
+                }
+            });
+            //return Client.Request.setSocks5Proxy(host, port)
         })
         .catch(console.error)
+        .then(request => {
+            /*return Client.Session.create(device, storage, username, password)
+                 .then(function(session) {
+                 let { $query_hash, $id } = _wa,
+                 count = 5000;
+
+                 console.log('Fetching started from: %o', after);
+
+                 if(!followUp) {
+                 count = 1000;
+                 return loadInstagramFollowers.call({ session, updateFollower }, $query_hash, $id, count, after, false)
+                 }
+
+                 fs.writeFileSync(FETCH_FILENAME, +(new Date()));
+
+                 try { after = fs.readFileSync(CURSOR_FILENAME, 'utf-8') } catch(e) { console.error(e) }
+                 after = !!after ? after : null;
+
+                 return loadInstagramFollowers.call({ session, updateFollower }, $query_hash, $id, count, after, followUp)
+                 })
+                 .catch(Client.Exceptions.CheckpointError, challengeMe)*/
+        });
+}
+
+function challengeMe(error){console.log(error);
+        /*return Client.Web.Challenge.resolve(error, 'phone')
+        .then(function(challenge){
+            console.log(challenge.type);
+        })*/
+        /*.then(function(challenge){
+            // And we got the account confirmed!
+            // so let's login again
+            return loginAndFollow(device, storage, user, password);
+        })*/
 }
 
 function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp=true) {
@@ -62,6 +102,8 @@ function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp
         .send()
         .then(res => {
             let { body, headers } = res;
+
+            console.log('res: %o', res);
 
             if(!!body == false) {
                 return
@@ -106,7 +148,7 @@ function loadInstagramFollowers(query_hash, id, first=5000, after=null, followUp
             }
 
             return !!after
-                ? setTimeout(() => { loadInstagramFollowers.call(_this, query_hash, id, first, after) }, 7200)
+                ? setTimeout(() => { loadInstagramFollowers.call(_this, query_hash, id, first, after) }, UPDATE_TIMEOUT)
                 : false
         })
         .catch(res => {

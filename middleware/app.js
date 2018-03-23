@@ -70,6 +70,21 @@ module.exports = function (proto, domain, port, callbacks) {
         res.end();
     });
 
+    router.get('/test', function(req, res) {
+        console.log('IP: %o', getCallerIP(req));
+        res.end();
+
+        function getCallerIP(request) {
+            var ip = request.headers['x-forwarded-for'] ||
+                request.connection.remoteAddress ||
+                request.socket.remoteAddress ||
+                request.connection.socket.remoteAddress;
+            ip = ip.split(',')[0];
+            ip = ip.split(':').slice(-1); //in case the ip returned in a format: "::ffff:146.xxx.xxx.xxx"
+            return ip;
+        }
+    });
+
     router.get(URL_SUBSCRIBE, function(req, res) {
         //res.sendFile([ STATIC_PRIVATE_STORAGE, 'subscribe', 'index.html' ].join('/'))
         res.writeHead(200, { 'Location': 'https://www.instagram.com/pugachevmark/' });
