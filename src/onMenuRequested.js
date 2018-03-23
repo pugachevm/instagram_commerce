@@ -23,7 +23,7 @@ module.exports = function($api, context, match={}) {
                 .then(user => {
                     let { instagramNickname } = user;
 
-                    return $api.checkSubscription(instagramNickname, true)
+                    return $api.checkSubscription(instagramNickname)
                 })
                 .then(isSubscribed => {
                     if(isSubscribed) {

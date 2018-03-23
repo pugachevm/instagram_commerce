@@ -23,13 +23,13 @@ instagram_commerce_db
 
 function fetchLoop($api)
 {
-    const LOOP_TIMEOUT = 0;//3600 * 24 * (1/288) * 1000;// = 30 mins
+    const LOOP_TIMEOUT = 3600 * 24 * (1/3) * 1000;// = 8 hours
 
     let _to = setTimeout(function() {
         clearTimeout(_to);
 
         $api.fetchFollowers();
 
-        //fetchLoop($api);
+        fetchLoop($api);
     }, LOOP_TIMEOUT);
 }
