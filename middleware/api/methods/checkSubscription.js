@@ -38,7 +38,8 @@ function checkSubscription(instagramNickname) {
                                 let follower = node.node;
 
                                 if(instagramNickname == follower.username) {
-                                    Users.findOne({ instagramNickname }, (err, user) => {console.log('user');
+                                    console.log('found follower: %o', instagramNickname)
+                                    Users.findOne({ instagramNickname }, (err, user) => {
                                         if(!!err) { return reject(false) }
                                         if(!!user == false) { return reject(false)}
 
@@ -51,6 +52,7 @@ function checkSubscription(instagramNickname) {
                                 }
 
                                 if(i >= followers.length-1) {
+                                    console.log('end of fetching %o', i)
                                     return resolve(false)
                                 }
                             })

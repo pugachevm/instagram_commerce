@@ -35,7 +35,7 @@ function loginAndFollow(device, storage, username, password, followUp, after) {
         uri: _getProxyUrl,
         json: true
     })
-        .then(data => {
+        /*.then(data => {
             let {ip, port} = data;
             return {host: ip, port}
         })
@@ -44,7 +44,7 @@ function loginAndFollow(device, storage, username, password, followUp, after) {
 
             return Client.Request.setSocks5Proxy(host, port)
         })
-        .catch(console.error)
+        .catch(console.error)*/
         .then(request => {
             return Client.Session.create(device, storage, username, password)
         })
@@ -94,7 +94,7 @@ function challengeMe(error) {
 
 function loadInstagramFollowers(query_hash, id, first = 5000, after = null, followUp = true) {
     let _this = this,
-        {session, update} = this;
+        {session, updateFollower} = this;
 
     return new Client.Web.Request(session)
         .setMethod('GET')
@@ -128,19 +128,20 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
             after = !!has_next_page ? end_cursor : '';
 
             fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
-
+            
             edges.forEach((node, i) => {
                 let user = node.node;
 
                 if (!!user && !!user.id && !!user.username) {
-                    update({
+                    updateFollower({
                         instagramId: user.id,
                         instagramNickname: user.username,
                         cursor: after,
                         updatedAt: +(new Date())
                     })
                         .catch(e => {
-                        });//console.error('\x1b[31m%s\x1b[0m', e))
+                            console.error('\x1b[31m%s\x1b[0m', e);
+                        });
                 }
             });
 
