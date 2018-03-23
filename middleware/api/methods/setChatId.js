@@ -12,7 +12,7 @@ function setChatId(userData, chatId) {
 
         let query = { chatId };
 
-        Users.findOneAndUpdate(query, userData, { upsert: true }, (err, user) => {
+        Users.findOne(query, (err, user) => {
             if (!!err) { return reject(err) }
 
             if (!!user == false) {

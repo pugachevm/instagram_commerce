@@ -101,12 +101,13 @@ function addPoints(scoreId, update) {
         defaultScore = { initAction: false, instagramSubscriptions: [], friendsInvitations: [] };
 
     return new Promise(function(resolve, reject) {
-        Scores.findOne(query, function(err, score) {
+        Scores.findOne(query, (err, score) => {
             if (!!err) { return reject(err) }
 
             score = !!score ? score : new Scores(defaultScore);
+            console.log('Score: %o', score);
 
-            score.initAction = !!instagram;// depends from any instagram subscription
+            score.initAction = score.initAction || !!instagram;// depends from any instagram subscription
             !!instagram && !isHashExists(score.instagramSubscriptions, instagram) && score.instagramSubscriptions.push(instagram);
             !!friend && !isHashExists(score.friendsInvitations, friend._id) && score.friendsInvitations.push(friend);
 

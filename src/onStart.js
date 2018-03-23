@@ -19,13 +19,16 @@ module.exports = function($api, chatId, context) {
             let friend = stateData.args,
                 { telegramNickname } = user;
 
-            if(!!friend && !!~telegramNickname.indexOf(friend) == false) {
+                console.log('Started USER: %o', user);
+
+            if(!!friend && !!telegramNickname){//} && !!telegramNickname.match(new RegExp(`^${friend}$`)) == false) {
+                console.log('INVITED BY: %o', friend);
                 $api.getUserData(user.telegramId)
                     .then(user => {
                         let { invitedBy } = user;
 
                         if(!!invitedBy == false) {
-                            return $api.setUserPoints(user.telegramNickname, { friend })
+                            return $api.setUserPoints(telegramNickname, { friend })
                                 .then(user => {
                                     $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
                                 })
