@@ -10,46 +10,45 @@ function setUserPoints(nickname, args) {
         Users = models.Users,
         Scores = models.Scores;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         let query = { telegramNickname: nickname },
             scores = null;
 
-        Users.findOne(query, function (err, user) {
+        Users.findOne(query, (err, user) => {
             if (!!err) { return reject(err) }
 
             if (!!user == false) { return reject(new Error('User not found')) }
 
             let { friend, instagram } = args,
                 { invitedBy } = user;
-            
-            if(!!invitedBy) {
+
+            if (!!invitedBy) {
                 friend = null;
             }
 
-            Users.populate(user, { path: 'scores', model: 'Scores' }, function (err, user) {
+            Users.populate(user, { path: 'scores', model: 'Scores' }, (err, user) => {
                 if (!!err) { return reject(err) }
 
                 let { scores } = user,
                     userId = user._id;
 
-                findMaster.call({ Users, Scores }, { telegramNickname: friend }, userId)
-                    .then(function(master) {
+                findMaster.call(models, { telegramNickname: friend }, userId)
+                    .then(master => {
                         let masterId = !!master ? master._id : null,
                             scoreId = !!scores ? scores._id : null;
 
-                        return addPoints.call({ Users, Scores },
-                            scoreId,
-                            { instagram })
-                            .then(function(score) {
+                        return addPoints.call(models, scoreId, { instagram })
+                            .then(score => {
                                 user.scores = score._id;
                                 !!masterId && (user.invitedBy = masterId);
-        
-                                user.save(function(err) {
+
+                                user.save(err => {
                                     if (!!err) { return reject(err) }
-        
+
                                     return resolve(user)
                                 })
                             })
+                            .catch(reject)
                     })
                     .catch(reject)
             })
@@ -61,11 +60,11 @@ function setUserPoints(nickname, args) {
 function findMaster(query, invitedId) {
     let { Users, Scores } = this;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         if (!invitedId) { return resolve(null) }
 
         Users.findOne(query).populate({ path: 'scores', model: 'Scores' })
-            .exec(function(err, master) {
+            .exec((err, master) => {
                 if (!!err) { return reject(err) }
 
                 if (!!master == false) { return resolve(null) }
@@ -78,12 +77,12 @@ function findMaster(query, invitedId) {
                     {
                         friend: (!!invitedId ? { _id: invitedId } : null)
                     })
-                    .then(function(score) {
+                    .then(score => {
                         let scoreId = score._id;
 
                         master.scores = scoreId;
 
-                        master.save(function(err) {
+                        master.save(err => {
                             if (!!err) { return reject(err) }
 
                             return resolve(master);
@@ -94,24 +93,22 @@ function findMaster(query, invitedId) {
     })
 }
 
-function addPoints(scoreId, update) {
+function addPoints(scoreId, { friend, instagram }) {
     let { Scores } = this,
-        { friend, instagram } = update,
         query = { _id: scoreId },
         defaultScore = { initAction: false, instagramSubscriptions: [], friendsInvitations: [] };
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         Scores.findOne(query, (err, score) => {
             if (!!err) { return reject(err) }
 
             score = !!score ? score : new Scores(defaultScore);
-            console.log('Score: %o', score);
 
             score.initAction = score.initAction || !!instagram;// depends from any instagram subscription
             !!instagram && !isHashExists(score.instagramSubscriptions, instagram) && score.instagramSubscriptions.push(instagram);
             !!friend && !isHashExists(score.friendsInvitations, friend._id) && score.friendsInvitations.push(friend);
 
-            score.save(function(err) {
+            score.save(err => {
                 if (!!err) { return reject(err) }
 
                 return resolve(score)

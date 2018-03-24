@@ -19,10 +19,7 @@ module.exports = function($api, chatId, context) {
             let friend = stateData.args,
                 { telegramNickname } = user;
 
-                console.log('Started USER: %o', user);
-
             if(!!friend && !!telegramNickname){//} && !!telegramNickname.match(new RegExp(`^${friend}$`)) == false) {
-                console.log('INVITED BY: %o', friend);
                 $api.getUserData(user.telegramId)
                     .then(user => {
                         let { invitedBy } = user;
