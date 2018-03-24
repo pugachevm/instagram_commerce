@@ -32,7 +32,6 @@ module.exports = function() {
         .action(':whoami', require('./onWhoAmI'))
         .on('authorized', require('./onAuthorized'))
         .on('subscribe', require('./onSubscribe'))
-        .on('subscribed', require('./onSubscribed'))
         .on('getChatId', require('./onGetChatId'))
         .start(api.method, middlewareUri);
 

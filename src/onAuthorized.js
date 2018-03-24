@@ -10,12 +10,11 @@ module.exports = function($api, data) {
         userData = {
             instagramId: +profile.id,
             instagramNickname: profile.username
-        },
-        getChatId = $bot.getChatId;
+        };
 
-    getChatId(userData)
+    $bot.getChatId(userData)
         .then(function(chatId) {
-            $api.updateUserData({ chatId: chatId }, userData)
+            $api.updateUserData({ chatId }, userData)
                 .then(function(user) {
                     $bot.emit('subscribe', accessToken)
                 })

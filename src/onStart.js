@@ -50,7 +50,6 @@ module.exports = function($api, chatId, context) {
 
     return $bot.reply(
         context,
-        MESSAGES.start,
-        $bot.getKeyboard(BUTTONS.callAmSubscribed, 'static')
+        MESSAGES.start
     )
 };
