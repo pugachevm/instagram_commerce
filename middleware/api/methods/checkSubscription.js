@@ -21,9 +21,11 @@ function checkSubscription(instagramNickname) {
                 if (!!err) { return reject(err) }
 
                 if (!!instFollower == false) {
+                    console.log('Follower NOT FOUND')
                     return findFollowerFromLastFollowers.call(models, fetchFollowers, instagramNickname)
                         .then(follower => {
-                            let instagramNickname = follower.username;
+                            let instagramNickname = !!follower ? follower.node.username : null;
+                            console.log('FETCHED NICK: %o', instagramNickname);
                             return updateUserSubscription.call(models, setUserPoints, instagramNickname)
                         })
                         .then(resolve)
@@ -40,7 +42,9 @@ function checkSubscription(instagramNickname) {
                 if (_currentTimestamp - _updatedTimestamp >= FOLLOWER_FETCH_TIMEOUT_APPRX) {
                     return findFollowerFromLastFollowers.call(models, fetchFollowers, instagramNickname)
                         .then(follower => {
-                            let instagramNickname = follower.username;
+                            let instagramNickname = !!follower ? follower.node.username : null;
+
+                            console.log('FETCHED NICK: %o', instagramNickname);
                             return updateUserSubscription.call(models, setUserPoints, instagramNickname)
                         })
                         .then(resolve)
@@ -58,8 +62,7 @@ function checkSubscription(instagramNickname) {
 }
 
 function findFollowerFromLastFollowers(fetchFollowers, instagramNickname) {
-    let models = this,
-        follower = {};
+    let models = this;
 
     return new Promise((resolve, reject) => {
         fetchFollowers(false, null)
@@ -67,29 +70,17 @@ function findFollowerFromLastFollowers(fetchFollowers, instagramNickname) {
                 followers = followers || [];
                 console.log('COUNT: %o', followers.length);
 
-                followers.forEach((node, i) => {
-                    follower = node.node;
-
-                    if (instagramNickname == follower.username) {
-                        console.log('found follower: %o', instagramNickname)
-                        return resolve(follower)
-                    }
-
-                    if (i >= followers.length - 1) {
-                        console.log('end of fetching %o', i)
-                        return resolve(follower)
-                    }
-                })
+                return resolve(followers.filter(node => !!node ? instagramNickname == node.node.username : false).shift())
             })
             .catch(reject)
     })
 }
 
-function updateUserSubscription(instagramNickname) {
+function updateUserSubscription(setUserPoints, instagramNickname) {
     let { Users } = this;
 
     return new Promise((resolve, reject) => {
-        if(!instagramNickname) { return resolve(false) }
+        if(!!instagramNickname == false) { return resolve(false) }
 
         return Users.findOne({ instagramNickname }, (err, user) => {
             if (!!err) { return resolve(false) }

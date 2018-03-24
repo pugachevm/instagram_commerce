@@ -13,28 +13,30 @@ module.exports = function($api, context, match={}) {
             subscribed: 'я подписался',
             requested: 'меню'
         },
-        $menu = null,
+        $menu = {},
         $menuMessage = MESSAGES.wrongSubscription;
 
     switch (match.lastIndex) {
         case menuModifiers.subscribed.length:
 
+            $bot.send(MESSAGES.checkingSubscription);
+
             return $api.getUserData(context.from.id)
                 .then(user => {
-                    let { instagramNickname } = user;
+                    let { instagramNickname } = user;console.log('Requested by: %o', instagramNickname);
 
                     return $api.checkSubscription(instagramNickname)
                 })
                 .then(isSubscribed => {
                     if(isSubscribed) {
-                        $menu = $bot.getKeyboard(BUTTONS.menu);
-                        $menuMessage = MESSAGES.menuRequested;
+                        $menuMessage = MESSAGES.subscribed;
+                        $menu = $bot.getKeyboard(BUTTONS.callMenu, 'static');
                     }
 
                     return $bot.reply(
                         context,
-                        MESSAGES.subscribed,
-                        $bot.getKeyboard(BUTTONS.callMenu, 'static')
+                        $menuMessage,
+                        $menu
                     )
                 })
                 .catch(console.error);

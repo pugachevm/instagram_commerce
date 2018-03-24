@@ -5,8 +5,7 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 
 module.exports = function($api, data) {
     let $bot = this,
-        accessToken = data.accessToken,
-        profile = data.profile,
+        { accessToken, profile } = data,
         userData = {
             instagramId: +profile.id,
             instagramNickname: profile.username
