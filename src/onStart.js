@@ -39,7 +39,7 @@ module.exports = function($api, chatId, context) {
             $bot.send(MESSAGES.signIn, $bot.getKeyboard(BUTTONS.signIn.map(button => {
                 let { label, value } = button;
 
-                value = value.replace(/\$domain/i, $bot.$middlewareUri);
+                value = [ value.replace(/\$domain/i, $bot.$middlewareUri), `chatId=${chatId}` ].join('?');
 
                 return { label, value }
             })))

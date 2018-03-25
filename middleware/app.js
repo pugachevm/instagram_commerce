@@ -31,15 +31,7 @@ module.exports = function (proto, domain, port, callbacks) {
 
     let { signIn } = callbacks;
 
-    passport.serializeUser(function (user, done) {
-        done(null, user);
-    });
-
-    passport.deserializeUser(function (obj, done) {
-        done(null, obj);
-    });
-
-    passport.use(new InstagramStrategy({
+    const PASSPORT_INSTAGRAM_CONFIG = {
         clientID: INSTAGRAM_CLIENT_ID,
         clientSecret: INSTAGRAM_CLIENT_SECRET,
         callbackURL: [
@@ -48,50 +40,66 @@ module.exports = function (proto, domain, port, callbacks) {
             (port == 3000 ? ':'+ port : ''),
             URL_AUTH_CALLBACK
         ].join(''),
-        scope: ['relationships', 'follower_list']
-    },
-        function (accessToken, refreshToken, profile, done) {
+        scope: ['relationships', 'follower_list'],
+        passReqToCallback: true
+    };
 
-            process.nextTick(function () {
+    passport.serializeUser((user, done) => {
+        done(null, user);
+    });
 
+    passport.deserializeUser((obj, done) => {
+        done(null, obj);
+    });
+
+    passport.use(new InstagramStrategy(PASSPORT_INSTAGRAM_CONFIG,
+        (req, accessToken, refreshToken, profile, done) => {
+            let { chatId } = req.session;
+
+            process.nextTick(() => {
                 done(null, profile);
 
                 return signIn({
-                    accessToken: accessToken,
-                    profile: profile
+                    chatId,
+                    accessToken,
+                    profile
                 })
             });
         }
     ));
 
 
-    router.get('/', function (req, res) {
-        //res.writeHead(302, { 'Location': URL_SUBSCRIBE });
+    router.get('/', (req, res) => {
         res.end();
     });
 
-    router.get(URL_SUBSCRIBE, function(req, res) {
-        //res.sendFile([ STATIC_PRIVATE_STORAGE, 'subscribe', 'index.html' ].join('/'))
-        res.writeHead(200, { 'Location': 'https://www.instagram.com/pugachevmark/' });
-        res.end();
-    });
-
-    router.get(URL_AUTH, passport.authenticate('instagram', { scope: ['relationships', 'follower_list'] }), function (req, res) {
-        // do
-        console.log('Auth uri executed')
-    });
-
-    router.get(URL_AUTH_CALLBACK, passport.authenticate('instagram', { failureRedirect: URL_AUTH }), function (req, res) {
-        console.log('Auth callback uri executed');
-
-        /*res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.write('<script>window.close()</script>');
-        res.end();*/
+    router.get(URL_SUBSCRIBE, (req, res) => {
         res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     });
 
-    router.get(URL_LOGOUT, function(req, res) {
+    router.get(URL_AUTH, (req, res, next) => {
+        // do
+        let { chatId } = req.query;
+        req.session.chatId = chatId;
+
+        passport.authenticate('instagram', {
+            scope: ['relationships', 'follower_list']
+        })(req, res, next);
+    });
+
+    router.get(URL_AUTH_CALLBACK, (req, res, next) => {
+        let { chatId } = req.session;
+
+        passport.authenticate('instagram', {
+            failureRedirect: URL_AUTH
+        })(req, res, next)
+    }, (req, res) => {
+        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
+        res.end();
+    });
+
+    router.get(URL_LOGOUT, (req, res) => {
         req.logout();
         res.redirect('/');
     });
@@ -114,7 +122,7 @@ module.exports = function (proto, domain, port, callbacks) {
 
     app.use('/', router);
 
-    app.listen(port, function () {
+    app.listen(port, () => {
         console.log('Server started at %o:%o', domain, port)
     });
 
@@ -126,7 +134,7 @@ module.exports = function (proto, domain, port, callbacks) {
 
 function checkSubscription(callback) {
 
-    let _to = setTimeout(function() {
+    let _to = setTimeout(() => {
         clearTimeout(_to);
 
         callback();
