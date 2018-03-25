@@ -17,4 +17,5 @@ module.exports = function($api, context) {
             context, [ MESSAGES.invitationLink, `[${MESSAGES.contestName}](${_invitationLink})` ].join(''),
             markup
         ))
+        .catch(console.error)
 };

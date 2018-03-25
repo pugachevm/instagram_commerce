@@ -29,6 +29,7 @@ module.exports = function($api, chatId, context) {
                                 .then(user => {
                                     $bot.send(MESSAGES.startByInvitation.replace(/\$user/g, friend))
                                 })
+                                .catch(console.error)
                         }
 
                         return $bot.send(MESSAGES.alreadyInvited)
@@ -43,7 +44,8 @@ module.exports = function($api, chatId, context) {
 
                 return { label, value }
             })))
-        });
+        })
+        .catch(console.error);
 
     return $bot.reply(
         context,

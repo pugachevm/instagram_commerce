@@ -17,5 +17,6 @@ module.exports = function ($api, data) {
         .then(function (user) {
             $bot.emit('subscribe', accessToken)
         })
+        .catch(console.error)
 
 };

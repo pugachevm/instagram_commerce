@@ -47,5 +47,6 @@ module.exports = function($api, context) {
                         $bot.getKeyboard(BUTTONS.menuBack)
                     )
                 })
+                .catch(console.error)
         })
 };
