@@ -8,5 +8,6 @@
     "checkSubscription",
     "getUserData",
     "updateFollower",
-    "removeInstagramSubscription"
+    "removeInstagramSubscription",
+    "getUsersByCriteria"
 ]
