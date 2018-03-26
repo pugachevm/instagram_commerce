@@ -9,6 +9,7 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 module.exports = function($api, context, match={}) {
     let $bot = this,
         type = context.updateType,
+        chatId = context.from.id,
         menuModifiers = {
             subscribed: 'я подписался',
             requested: 'меню'
@@ -21,11 +22,21 @@ module.exports = function($api, context, match={}) {
 
             $bot.send(MESSAGES.checkingSubscription);
 
-            return $api.getUserData(context.from.id)
+            return $api.getUserData(chatId)
                 .then(user => {
-                    let { instagramNickname } = user;console.log('Requested by: %o', instagramNickname);
+                    let { instagramNickname } = user;
+                    console.log('Requested by: %o', instagramNickname);
 
                     return $api.checkSubscription(instagramNickname)
+                })
+                .catch(err => {
+                    console.error(err);
+
+                    return $bot.reply(
+                        context,
+                        $menuMessage,
+                        $menu
+                    )
                 })
                 .then(isSubscribed => {
                     if(isSubscribed) {
@@ -48,7 +59,7 @@ module.exports = function($api, context, match={}) {
             $menuMessage = MESSAGES.menuRequested;
 
             return type == 'callback_query'
-                ? context.answerCbQuery(MESSAGES.loading).then(() => $bot.editMessage(context, $menuMessage, $menu))
+                ? context.answerCbQuery(MESSAGES.loading).then(() => $bot.editMessage(context, $menuMessage, $menu)).catch(console.error)
                 : $bot.reply(context, $menuMessage, $menu);
             break;
     }

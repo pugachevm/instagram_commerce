@@ -15,3 +15,14 @@ module.exports = function(Schema) {
     })
 
 };
+
+/*
+ {
+ "id": "_id",
+ "initAction": "initAction",
+ "instagramSubscriptions": "instagramSubscriptions",
+ "friendsInvitations": "friendsInvitations",
+ "updatedAt": "updatedAt",
+ "createdAt": "createdAt"
+ }
+ */

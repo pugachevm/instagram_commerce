@@ -16,23 +16,24 @@ function checkSubscription(instagramNickname) {
 
     return new Promise((resolve, reject) => {
 
+        if(!instagramNickname) { return resolve(false) }
+
         InstagramFollowers
-            .findOne({ instagramNickname }, function (err, instFollower) {
+            .findOne({ instagramNickname }, (err, instFollower) => {
                 if (!!err) { return reject(err) }
 
                 if (!!instFollower == false) {
-                    console.log('Follower NOT FOUND')
                     return findFollowerFromLastFollowers.call(models, fetchFollowers, instagramNickname)
                         .then(follower => {
                             let instagramNickname = !!follower ? follower.node.username : null;
-                            console.log('FETCHED NICK: %o', instagramNickname);
                             return updateUserSubscription.call(models, setUserPoints, instagramNickname)
                         })
                         .then(resolve)
                         .catch(reject)
                 }
 
-                let { instagramNickname, cursor, updatedAt } = instFollower;
+                let { cursor, updatedAt } = instFollower;
+                instagramNickname = instFollower.instagramNickname;
 
                 //if (!cursor) { return resolve(true) }
 
@@ -43,15 +44,11 @@ function checkSubscription(instagramNickname) {
                     return findFollowerFromLastFollowers.call(models, fetchFollowers, instagramNickname)
                         .then(follower => {
                             let instagramNickname = !!follower ? follower.node.username : null;
-
-                            console.log('FETCHED NICK: %o', instagramNickname);
                             return updateUserSubscription.call(models, setUserPoints, instagramNickname)
                         })
                         .then(resolve)
                         .catch(reject)
                 }
-
-                console.log('User auto-updating')
 
                 return updateUserSubscription.call(models, setUserPoints, instagramNickname)
                     .then(resolve)
@@ -62,8 +59,6 @@ function checkSubscription(instagramNickname) {
 }
 
 function findFollowerFromLastFollowers(fetchFollowers, instagramNickname) {
-    let models = this;
-
     return new Promise((resolve, reject) => {
         fetchFollowers(false, null)
             .then(followers => {
