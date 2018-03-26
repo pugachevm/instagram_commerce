@@ -42,16 +42,3 @@ module.exports = function() {
         signIn: data => $bot.emit('authorized', data)
     });
 };
-
-function fetchLoop($api)
-{
-    const LOOP_TIMEOUT = 3600 * 24 * (1/1440) * 1000;// = 5 mins
-
-    let _to = setTimeout(function() {
-        clearTimeout(_to);
-
-        $api.fetchFollowers();
-
-        fetchLoop($api);
-    }, LOOP_TIMEOUT);
-}

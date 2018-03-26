@@ -49,4 +49,5 @@ module.exports = function($api, context) {
                 })
                 .catch(console.error)
         })
+        .catch(console.error)
 };
