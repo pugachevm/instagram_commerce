@@ -14,12 +14,6 @@ module.exports = function(Schema) {
         createdAt: { type: Date, default: Date.now, required: true }
     });
 
-    InstagramFollowers.pre('save', (next) => {
-        this.updatedAt = Date.now();
-
-        next()
-    });
-
     return InstagramFollowers
 
 };

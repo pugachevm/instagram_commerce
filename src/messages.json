@@ -31,10 +31,11 @@
         "pending": "⛔️",
         "rows": [
             "*ИНФОРМАЦИЯ О БАЛЛАХ*\r\n",
-            "Регистрация: *$signup*\r\n",
-            "Подписка Instagram: *$instagramSubscriptions*\r\n",
-            "Друзья (Instagram+): *$friendsInvitations*\r\n",
-            "Бонус-референс: *$bonus*\r\n",
+            "Регистрация: *+$signup*\r\n",
+            "Регистрация (Приглашение): *+$invitedBy*\r\n",
+            "Подписка Instagram: *+$instagramSubscriptions*\r\n",
+            "Друзья (Instagram+): *+$friendsInvitations*\r\n",
+            "Бонус-референс: *+$bonus*\r\n",
             "Итог: *$preCountedPoints*"
         ]
     },
@@ -43,6 +44,7 @@
         "units": ["балл", "балла", "баллов"]
     },
     "invitationLink": "Пригласите друга по этой ссылке, и вам (тебе и ему) будет зачислено по 2 балла!\r\n",
+    "invitationFix": "Добавьте ник-нейм в профиле Telegram, чтобы активировать ссылку-приглашение\r\n",
     "whoami": [
         "Привет, я *Марк Пугачев* - Организатор данного конкурса\r\n",
         "PUGACHEV CONCIERGE SERVICE\r\n",

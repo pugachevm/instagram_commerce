@@ -21,7 +21,7 @@ function updateFollower(follower) {
             //console.log('\x1b[32m%s\x1b[0m %o', 'InstagramFollower:', user);
 
             user.save(err => {
-                if(!!err) { return reject(err)}
+                if(!!err) { console.log('\x1b[32m%s\x1b[0m %o', user); return reject(err) }
 
                 return resolve(user)
             })

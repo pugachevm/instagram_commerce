@@ -10,7 +10,7 @@ let method = require('./method'),
 
 const FETCH_FILENAME = [__dirname, 'fetch.timestamp'].join('/');
 const CURSOR_FILENAME = [__dirname, 'fetch.token'].join('/');
-const UPDATE_TIMEOUT = 7.2 * 1000 + getRandomInt(129, 9210);
+const UPDATE_TIMEOUT = 7.2 * 1000;
 
 module.exports = function (models) {
     return method(models, fetchFollowers)
@@ -50,9 +50,7 @@ function loginAndFollow(device, storage, username, password, followUp, after) {
         })
         .then(session => {
             let {$query_hash, $id} = _wa,
-                count = 5000;
-
-            console.log('Fetching started from: %o', after);
+                count = 4000;
 
             if (!followUp) {
                 count = 1000;
@@ -70,6 +68,8 @@ function loginAndFollow(device, storage, username, password, followUp, after) {
                 console.error(e)
             }
             after = !!after ? after : null;
+
+            console.log('Fetching started from: %o', after);
 
             return loadInstagramFollowers.call({
                 session,
@@ -92,7 +92,7 @@ function challengeMe(error) {
      })*/
 }
 
-function loadInstagramFollowers(query_hash, id, first = 5000, after = null, followUp = true) {
+function loadInstagramFollowers(query_hash, id, first = 4000, after = null, followUp = true) {
     let _this = this,
         { session, updateFollower } = this;
 
@@ -130,16 +130,18 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
             fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
 
             edges.forEach((node, i) => {
-                let user = node.node;
+                let user = node.node,
+                    { id, username } = user;
 
-                if (!!user && !!user.id && !!user.username) {
+                if (!!user && !!id && !username) {
                     updateFollower({
-                        instagramId: user.id,
-                        instagramNickname: user.username,
+                        instagramId: id,
+                        instagramNickname: username,
                         cursor: after,
                         updatedAt: +(new Date())
                     })
                         .catch(e => {
+                            console.log('USER THROW: %o', user);
                             console.error('\x1b[31m%s\x1b[0m', e);
                         });
                 }
@@ -149,8 +151,12 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
                 return edges
             }
 
+            let _uto = UPDATE_TIMEOUT + getRandomInt(9210, 129000);
+
+            console.log('UPDATE TIMEOUT: %o', _uto);
+
             return !!after
-                ? setTimeout(() => { loadInstagramFollowers.call(_this, query_hash, id, first, after) }, UPDATE_TIMEOUT)
+                ? setTimeout(() => { loadInstagramFollowers.call(_this, query_hash, id, first, after) }, _uto)
                 : false
         })
         .catch(res => {
