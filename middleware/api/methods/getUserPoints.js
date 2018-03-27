@@ -140,7 +140,7 @@ function countPoints({ initAction, instagramSubscriptions, friendsInvitations },
     }
 
     if(isInvited) {
-        points.invited += REWARD_FOR_INVITATION_AMOUNT;
+        points.invited += REWARD_FOR_INVITATION_PARENT;
     }
 
     return points
