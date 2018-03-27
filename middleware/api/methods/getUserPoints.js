@@ -27,9 +27,11 @@ function getUserPoints(userData) {
             .exec((err, user) => {
                 if(!!err) { return reject(err) }
 
-                if(!!user == false || !!user.scores == false) { return reject(null)}
+                if(!!user == false) { return reject(new Error('User not found')) }
 
                 let { scores, invitedBy } = user;
+
+                if(!!scores == false) { return reject(new Error('Scores was not defined')) }
 
                 Scores.populate(scores, { path: 'friendsInvitations', model: 'Users' }, (err, scores) => {
                     if(!!err) { return reject(err) }
