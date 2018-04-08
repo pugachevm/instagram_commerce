@@ -27,6 +27,7 @@ module.exports = function($api, context) {
                         _preCountedPoints = 0,
                         replacements = {
                             $signup: points.initAction,
+                            $invitedBy: points.invited,
                             $instagramSubscriptions: points.instagramSubscriptions,
                             $friendsInvitations: points.friendsInvitations,
                             $bonus: points.returnable,
@@ -38,7 +39,7 @@ module.exports = function($api, context) {
                     Object.keys(points).forEach(key => replacements.$preCountedPoints += points[key]);
                     
                     $message = $message.map(item => {
-                        return item.replace(new RegExp(Object.keys(replacements).map(key => key.replace(/\$/i, '\\$')).join('|'), 'ig'), key => '+' + replacements[key])
+                        return item.replace(new RegExp(Object.keys(replacements).map(key => key.replace(/\$/i, '\\$')).join('|'), 'ig'), key => replacements[key])
                     });
 
                     $bot.editMessage(
@@ -49,4 +50,5 @@ module.exports = function($api, context) {
                 })
                 .catch(console.error)
         })
+        .catch(console.error)
 };

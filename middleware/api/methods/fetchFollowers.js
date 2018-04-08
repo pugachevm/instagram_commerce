@@ -10,7 +10,7 @@ let method = require('./method'),
 
 const FETCH_FILENAME = [__dirname, 'fetch.timestamp'].join('/');
 const CURSOR_FILENAME = [__dirname, 'fetch.token'].join('/');
-const UPDATE_TIMEOUT = 7.2 * 1000 + getRandomInt(129, 9210);
+const UPDATE_TIMEOUT = 7.2 * 1000;
 
 module.exports = function (models) {
     return method(models, fetchFollowers)
@@ -35,24 +35,22 @@ function loginAndFollow(device, storage, username, password, followUp, after) {
         uri: _getProxyUrl,
         json: true
     })
-        /*.then(data => {
-            let {ip, port} = data;
-            return {host: ip, port}
-        })
-        .then(proxy => {
-            let {host, port} = proxy;
+    /*.then(data => {
+     let {ip, port} = data;
+     return {host: ip, port}
+     })
+     .then(proxy => {
+     let {host, port} = proxy;
 
-            return Client.Request.setSocks5Proxy(host, port)
-        })
-        .catch(console.error)*/
+     return Client.Request.setSocks5Proxy(host, port)
+     })
+     .catch(console.error)*/
         .then(request => {
             return Client.Session.create(device, storage, username, password)
         })
         .then(session => {
             let {$query_hash, $id} = _wa,
-                count = 5000;
-
-            console.log('Fetching started from: %o', after);
+                count = 4000;
 
             if (!followUp) {
                 count = 1000;
@@ -70,6 +68,8 @@ function loginAndFollow(device, storage, username, password, followUp, after) {
                 console.error(e)
             }
             after = !!after ? after : null;
+
+            console.log('Fetching started from: %o', after);
 
             return loadInstagramFollowers.call({
                 session,
@@ -92,9 +92,9 @@ function challengeMe(error) {
      })*/
 }
 
-function loadInstagramFollowers(query_hash, id, first = 5000, after = null, followUp = true) {
+function loadInstagramFollowers(query_hash, id, first = 4000, after = null, followUp = true) {
     let _this = this,
-        {session, updateFollower} = this;
+        { session, updateFollower } = this;
 
     return new Client.Web.Request(session)
         .setMethod('GET')
@@ -103,7 +103,7 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
         .signPayload()
         .send()
         .then(res => {
-            let {body, headers} = res;
+            let { body, headers } = res;
 
             if (!!body == false) {
                 return
@@ -111,7 +111,7 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
 
             body = JSON.parse(body);
 
-            let {data, status} = body;
+            let { data, status } = body;
 
             console.log('\x1b[33m%s\x1b[0m %o', 'status:', status);
 
@@ -119,27 +119,29 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
                 return
             }
 
-            let {user} = data,
-                {count, edges, page_info} = user.edge_followed_by,
-                {has_next_page, end_cursor} = page_info;
+            let { user } = data,
+                { count, edges, page_info } = user.edge_followed_by,
+                { has_next_page, end_cursor } = page_info;
 
             console.log('next_page: %o', has_next_page);
 
             after = !!has_next_page ? end_cursor : '';
 
             fs.writeFileSync(CURSOR_FILENAME, after);// update cursor to continue on aborting
-            
-            edges.forEach((node, i) => {
-                let user = node.node;
 
-                if (!!user && !!user.id && !!user.username) {
+            edges.forEach((node, i) => {
+                let user = node.node,
+                    { id, username } = user;
+
+                if (!!user && !!id && !username) {
                     updateFollower({
-                        instagramId: user.id,
-                        instagramNickname: user.username,
+                        instagramId: id,
+                        instagramNickname: username,
                         cursor: after,
                         updatedAt: +(new Date())
                     })
                         .catch(e => {
+                            console.log('USER THROW: %o', user);
                             console.error('\x1b[31m%s\x1b[0m', e);
                         });
                 }
@@ -149,14 +151,16 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
                 return edges
             }
 
+            let _uto = UPDATE_TIMEOUT + getRandomInt(9210, 129000);
+
+            console.log('UPDATE TIMEOUT: %o', _uto);
+
             return !!after
-                ? setTimeout(() => {
-                loadInstagramFollowers.call(_this, query_hash, id, first, after)
-            }, UPDATE_TIMEOUT)
+                ? setTimeout(() => { loadInstagramFollowers.call(_this, query_hash, id, first, after) }, _uto)
                 : false
         })
         .catch(res => {
-            let {body, headers} = res;
+            let { body, headers } = res;
 
             if (!!body == false) {
                 return false
@@ -164,7 +168,7 @@ function loadInstagramFollowers(query_hash, id, first = 5000, after = null, foll
 
             body = JSON.parse(body);
 
-            let {message, status} = body;
+            let { message, status } = body;
 
             console.log('\x1b[31m%s\x1b[0m %o', 'message', message);
             console.log('\x1b[33m%s\x1b[0m %o', 'status:', status);
@@ -178,9 +182,7 @@ Client.Web.Request.prototype.setGraphQlResource = function (query_hash, variable
         $qh: query_hash,
         $v: querystring.escape(JSON.stringify(variables))
     };
-    let _gql = 'graphql/query/?query_hash=$qh&variables=$v'.replace(/\$qh|\$v/ig, function (key) {
-        return _replacements[key]
-    });
+    let _gql = 'graphql/query/?query_hash=$qh&variables=$v'.replace(/\$qh|\$v/ig, key => _replacements[key]);
     this._resource = _gql;
     this.setUrl(Client.CONSTANTS.WEBHOST + _gql);
     return this;

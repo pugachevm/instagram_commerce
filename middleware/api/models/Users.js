@@ -23,3 +23,21 @@ module.exports = function(Schema) {
     })
 
 };
+
+/*
+ {
+ "id": "_id",
+ "telegramId": "telegramId",
+ "telegramNickname": "telegramNickname",
+ "instagramId": "instagramId",
+ "instagramNickname": "instagramNickname",
+ "firstName": "firstName",
+ "lastName": "lastName",
+ "chatId": "chatId",
+ "scores": "scores",
+ "invitedBy": "invitedBy",
+ "preCountedPoints": "preCountedPoints",
+ "updatedAt": "updatedAt",
+ "createdAt": "createdAt"
+ }
+ */

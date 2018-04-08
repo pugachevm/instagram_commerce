@@ -6,6 +6,7 @@ const {
     REWARD_FOR_INIT,
     REWARD_FOR_INSTAGRAM,
     REWARD_FOR_INVITATION_INIT,
+    REWARD_FOR_INVITATION_PARENT,
     REWARD_FOR_INIVITATION_INSTAGRAM,
     REWARD_FOR_INVITATION_AMOUNT
 } = constants;
@@ -26,9 +27,13 @@ function getUserPoints(userData) {
             .exec((err, user) => {
                 if(!!err) { return reject(err) }
 
-                if(!!user == false || !!user.scores == false) { return reject(null)}
+                if(!!user == false) { return reject(new Error('User not found')) }
 
-                Scores.populate(user.scores, { path: 'friendsInvitations', model: 'Users' }, (err, scores) => {
+                let { scores, invitedBy } = user;
+
+                if(!!scores == false) { return reject(new Error('Scores was not defined')) }
+
+                Scores.populate(scores, { path: 'friendsInvitations', model: 'Users' }, (err, scores) => {
                     if(!!err) { return reject(err) }
 
                     if(!!scores == false) { return reject(new Error('Unexpected error while populating friends invitations')) }
@@ -45,7 +50,7 @@ function getUserPoints(userData) {
                         .then(friendsInvitations => {
                             scoresToCount.friendsInvitations = friendsInvitations;
 
-                            return countPoints(scoresToCount)
+                            return countPoints(scoresToCount, invitedBy)
                         })
                         .then(preCountedPoints => {
                             let _preCountedPoints = 0;
@@ -73,50 +78,45 @@ function populateFriends(friendsInvitations) {
 
     return new Promise((resolve, reject) => {
 
-        function addFriend(scores, isEnd) {
-            result.push(scores);
-
-            if(isEnd) {
-                return resolve(result)
-            }
-        }
-
         if(!friendsInvitations || !friendsInvitations.length) {
             return resolve(result)
         }
 
-        friendsInvitations.forEach((user, i) => {
-            let isEnd = i == friendsInvitations.length - 1;
+        Users
+            .find({ _id: { $in: friendsInvitations } })
+            .populate({ path: 'scores', model: 'Scores' })
+            .exec((err, friends) => {
+                if(!!err) { return resolve(result) }
 
-            Users.populate(user, { path: 'scores', model: 'Scores' }, (err, friend) => {
-                let friendPopulatedScores = {
+                return resolve(friends.map(friend => {
+                    let friendPopulatedScores = {
                         initAction: false,
                         instagramSubscription: false
                     };
 
-                if(!!err) { return addFriend(friendPopulatedScores, isEnd) }
-                if(!!friend == false) { return addFriend(friendPopulatedScores, isEnd) }
+                    let friendScores = friend.scores || {};
 
-                let friendScores = friend.scores || {};
+                    let { initAction, instagramSubscriptions } = friendScores;
 
-                let { initAction, instagramSubscriptions, friendsInvitations } = friendScores;
+                    friendPopulatedScores.initAction = initAction;
+                    friendPopulatedScores.instagramSubscription = instagramSubscriptions ? !!instagramSubscriptions.filter(item => item == MAIN_INSTAGRAM_REWARD).shift() : false;
 
-                friendPopulatedScores.initAction = initAction;
-                friendPopulatedScores.instagramSubscription = instagramSubscriptions ? !!instagramSubscriptions.filter(item => item == MAIN_INSTAGRAM_REWARD).shift() : false;
-
-                return addFriend(friendPopulatedScores, isEnd)
+                    return friendPopulatedScores
+                }))
             })
-        })
     })
 }
 
-function countPoints({ initAction, instagramSubscriptions, friendsInvitations }) {
+function countPoints({ initAction, instagramSubscriptions, friendsInvitations }, isInvited=false) {
     let points = {
             initAction: 0,
             instagramSubscriptions: 0,
             friendsInvitations: 0,
-            returnable: 0
+            returnable: 0,
+            invited: 0
         };
+
+    isInvited = !!isInvited;
 
     if(initAction) {
         points.initAction += REWARD_FOR_INIT
@@ -136,10 +136,13 @@ function countPoints({ initAction, instagramSubscriptions, friendsInvitations })
 
             if(initAction && instagramSubscription) {
                 points.friendsInvitations += REWARD_FOR_INIVITATION_INSTAGRAM;
+                points.returnable += REWARD_FOR_INVITATION_AMOUNT;
             }
         });
+    }
 
-        points.returnable += friendsInvitations.length * REWARD_FOR_INVITATION_AMOUNT;// 0.1 per each friend
+    if(isInvited) {
+        points.invited += REWARD_FOR_INVITATION_PARENT;
     }
 
     return points
