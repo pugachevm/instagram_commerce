@@ -33,12 +33,14 @@ module.exports = function() {
         .on('authorized', require('./onAuthorized'))
         .on('subscribe', require('./onSubscribe'))
         .on('getChatId', require('./onGetChatId'))
+        .on('subscribeMiddleware', require('./subscribeMiddleware'))
         .start(api.method, middlewareUri);
 
     // Run the Web-server
     App.call({
         sessionParser: sessionParser
     }, PROTO, DOMAIN, PORT, {
-        signIn: data => $bot.emit('authorized', data)
+        signIn: data => $bot.emit('authorized', data),
+        subscribeMiddleware: () => $bot.emit('subscribeMiddleware')
     });
 };

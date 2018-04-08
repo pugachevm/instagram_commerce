@@ -6,10 +6,14 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 module.exports = function($api) {
     let $bot = this;
     
-    $bot.send(
+    return $bot.send(
         MESSAGES.activated,
-        $bot.getKeyboard(BUTTONS.subscribe)
-    );
+        $bot.getKeyboard(BUTTONS.subscribe.map(button => {
+            let { label, value } = button;
 
-    $bot.send(MESSAGES.activationNotation, $bot.getKeyboard(BUTTONS.callAmSubscribed))
+            value = value.replace(/\$domain/i, $bot.$middlewareUri);
+
+            return { label, value }
+        }))
+    );
 };

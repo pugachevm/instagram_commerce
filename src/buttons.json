@@ -20,6 +20,6 @@
         { "label": "Авторизоваться", "value": "$domain/sign_in/"}
     ],
     "subscribe": [
-        { "label": "Подписаться", "value": "https://instagram.com/pugachevmark/" }
+        { "label": "Подписаться", "value": "$domain/subscribe/" }
     ]
 }

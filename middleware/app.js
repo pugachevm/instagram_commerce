@@ -29,7 +29,7 @@ const URL_SUBSCRIBE_CALLBACK = PATHMAP.subscribeCallback;
 
 module.exports = function (proto, domain, port, callbacks) {
 
-    let { signIn } = callbacks;
+    let { signIn, subscribeMiddleware } = callbacks;
 
     const PASSPORT_INSTAGRAM_CONFIG = {
         clientID: INSTAGRAM_CLIENT_ID,
@@ -73,7 +73,8 @@ module.exports = function (proto, domain, port, callbacks) {
         res.end();
     });
 
-    router.get(URL_SUBSCRIBE, (req, res) => {
+    router.get(URL_SUBSCRIBE, (req, res) => {console.log('Subscription requested')
+        subscribeMiddleware();
         res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
         res.end();
     });
