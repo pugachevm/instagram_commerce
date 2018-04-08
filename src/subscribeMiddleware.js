@@ -7,5 +7,5 @@ const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
 module.exports = function($api) {
     let $bot = this;
 
-    return $bot.send(MESSAGES.activationNotation, $bot.getKeyboard(BUTTONS.callAmSubscribed))
+    return $bot.send(MESSAGES.activationNotation, $bot.getKeyboard(BUTTONS.callAmSubscribed, 'static'))
 }
