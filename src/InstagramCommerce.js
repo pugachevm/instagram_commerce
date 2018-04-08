@@ -56,6 +56,10 @@ function InstagramCommerce(token) {
             .catch(console.error)
     };
 
+    this.dispatch = function(chatId, message, extra={}) {
+        return bot.telegram.sendMessage(chatId, message, Object.assign(extra, Extra.markdown()))
+    }
+
     this.editMessage = function(ctx, message, extra={}) {
         return ctx.editMessageText(message, Object.assign(extra, Extra.markdown()))
             .catch(console.error);

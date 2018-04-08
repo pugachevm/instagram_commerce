@@ -22,6 +22,7 @@ module.exports = function() {
     // Run Telegram Bot
     $bot
         .on('/start', require('./onStart'))
+        .on('/message', require('./onMessageResolve'))//god-mode
         .hears(/я\sподписался|меню/ig, _onMenuRequested)
         .action(':back', _onMenuRequested)
         .action(':rules', require('./onRulesRequested'))

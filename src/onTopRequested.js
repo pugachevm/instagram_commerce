@@ -10,7 +10,7 @@ module.exports = function($api, context) {
         $units = MESSAGES.topUsers.units;
 
     $api.getUsersByCriteria({ preCountedPoints: -1})
-        .then((users) => {
+        .then((users) => {console.log('allUsers')
             users.forEach((user, i) => {
                 let { firstName, preCountedPoints } = user;
                 firstName = firstName || 'Аноним';

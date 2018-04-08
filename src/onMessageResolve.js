@@ -1,0 +1,103 @@
+let fs = require('fs');
+
+const BUTTONS = JSON.parse(fs.readFileSync('./src/buttons.json', 'utf-8'));
+const MESSAGES = JSON.parse(fs.readFileSync('./src/messages.json', 'utf-8'));
+const ADMINS = JSON.parse(fs.readFileSync('./src/admins.json', 'utf-8'));
+const STORAGE_MESSAGES = {};
+
+module.exports = function($api, chatId, context) {
+    let $bot = this,
+        userData = context.from,
+        stateData = context.state.data,
+        user = {
+            telegramId: userData.id,
+            telegramNickname: userData.username,
+            firstName: userData.first_name,
+            lastName: userData.last_name
+        },
+        { param, args } = stateData,
+        isAdmin = ADMINS.find(admin => admin == chatId),
+        $message = [];
+
+    if(!isAdmin) {
+        return
+    }
+
+    dispatchAll = dispatchAll.bind({ $api, $bot });
+
+    let _message = formatArgs(args);
+
+    switch(param) {
+        case 'new':
+            messageResolver(_message.id, _message);
+            $message.push(_message.text, ' has been added');
+            break;
+        case 'delete':
+            messageResolver(args);
+            $message.push(args, ' has been deleted')
+            break;
+        case 'all':
+            Object.keys(STORAGE_MESSAGES).forEach(id => {
+                let _message = STORAGE_MESSAGES[id];
+                $message.push([ id, _message.text ].join(':'))
+            })
+            break;
+        case 'help':
+
+            break;
+    }
+
+    return $bot.reply(
+        context,
+        $message.join('\r\n')
+    )
+};
+
+function messageResolver(id, message) {
+    let _message = STORAGE_MESSAGES[id];
+
+    _message && clearTimeout(_message.to);
+
+    if(message) {
+        message.to = setTimeout(() => { dispatchAll(message) }, message.ms)
+        return STORAGE_MESSAGES[id] = message;
+    }
+
+    return delete STORAGE_MESSAGES[id]
+}
+
+function formatArgs(args) {
+    let [ date, time ] = args.split(' ');
+
+    if(!date || !time) { return {} }
+
+    let day = +date.substr(0,2),
+        month = +date.substr(3,5),
+        hours = +time.substr(0,2),
+        minutes = +time.substr(3,5),
+        timeNow = +(new Date()),
+        timeEnd = +(new Date(2018, month-1, day, hours, minutes)),
+        _date = { day, month, hours, minutes };
+    
+    message = args.substr(12) || '';
+    
+    return {
+        ms: Math.max(0, timeEnd - timeNow) + 1000,
+        id: +[ day, month, hours, minutes ].join(''),
+        text: message
+    }
+}
+
+function dispatchAll({ id, text }) {
+    let { $api, $bot } = this;
+
+    $api.getUsersByCriteria({ firstName: 'asc' })
+        .then(users => {
+            users.forEach(user => {
+                $bot.dispatch(user.telegramId, text)
+                    .catch(console.error)
+            });
+            messageResolver(id);
+        })
+        .catch(console.error);
+}
