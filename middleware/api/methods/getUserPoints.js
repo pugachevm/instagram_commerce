@@ -50,6 +50,8 @@ function getUserPoints(userData) {
                         .then(friendsInvitations => {
                             scoresToCount.friendsInvitations = friendsInvitations;
 
+                            console.log('SCORES TO COUNT: %o', scoresToCount);
+
                             return countPoints(scoresToCount, invitedBy)
                         })
                         .then(preCountedPoints => {
@@ -144,6 +146,9 @@ function countPoints({ initAction, instagramSubscriptions, friendsInvitations },
     if(isInvited) {
         points.invited += REWARD_FOR_INVITATION_PARENT;
     }
+
+    //toPrecision
+    points.returnable = +points.returnable.toFixed(1);
 
     return points
 }
