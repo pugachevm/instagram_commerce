@@ -95,7 +95,7 @@ module.exports = function (proto, domain, port, callbacks) {
             failureRedirect: URL_AUTH
         })(req, res, next)
     }, (req, res) => {
-        res.writeHead(302, { 'Location': 'https://www.instagram.com/pugachevmark/' });
+        res.writeHead(302, { 'Location': '/authorized' });
         res.end();
     });
 

@@ -1,0 +1,198 @@
+.pm {
+    background: #010101;
+    font-family: 'Gotham Thin', sans-serif;
+    color: #f1f1f1;
+    overflow: hidden;
+}
+
+.pm-screen {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: url('images/header.jpg') no-repeat fixed 50% 0 / auto 100%;
+    display: block;
+    z-index: -1;
+}
+.pm-header {
+    padding: 2em;
+    line-height: 75px;
+}
+
+.pm-logo {
+    padding: 0 1em 0 0;
+    height: 75px;
+    width: auto;
+    border-right: 1px rgba(255,255,255,.3) solid;
+    display: inline-block;
+}
+.pm-logo img {
+    height: 100%;
+    width: auto;
+    display: inline-block;
+}
+.pm-header__about {
+    padding: 0 1em;
+    vertical-align: middle;
+    display: inline-block;
+}
+.pm-header__about h6 {
+    margin: 0;
+    padding: 0;
+    font-family: 'FuturaPTMedium';
+    font-size: 1.5em;
+}
+.pm-header__about p {
+    margin: .5em 0;
+    font-family: 'FuturaPTLight';
+    font-size: 1.2em;
+}
+
+.pm-main {
+    position: relative;
+    padding: 1em 0;
+    height: calc(100% - 203px);
+    font-family: 'FuturaPTLight';
+}
+.pm-main h1 {
+    margin: 0 0 1em;
+    padding: 2em 0 0;
+    font-family: 'FuturaPTMedium';
+    font-size: 2.4em;
+    text-align: center;
+}
+.pm-main h1 small {
+    margin: 0 0 1.5em;
+    display: block;
+}
+.pm-main p {
+    position: absolute;
+    top: 50%;
+    padding: 0 2em;
+    font-size: 1.7em;
+    text-align: center;
+    transform: translate(0, -50%);
+}
+.pm-main p > span {
+    padding: .5em;
+    background: rgba(51,51,51,.35);
+    display: inline-block;
+}
+.pm-main .pm-cta {
+    display: none;
+}
+
+.pm-video {
+    position: absolute;
+    margin: 1em 5% 0;
+    bottom: 0;
+    height: auto;
+    width: 90%;
+    border: none;
+    display: block;
+}
+
+.pm-footer {
+    padding: 0 2rem;
+}
+.pm-cta {
+    position: relative;
+    margin: 2rem 0;
+    padding: 0;
+    height: 48px;
+    width: 100%;
+    line-height: 48px;
+    background: #2ca5e0;
+    border: 0 transparent solid;
+    border-radius: 24px;
+    font-family: 'FuturaPTMedium';
+    font-size: 2.4rem;
+    color: #f1f1f1;
+    text-align: center;
+    display: block;
+    outline: none;
+}
+.pm-cta span {
+    padding: 0 .5rem;
+    vertical-align: baseline;
+    display: inline-block;
+}
+.pm-cta span.thin {
+    font-family: 'FuturaPTLight';
+}
+.pm-cta i {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    height: 48px;
+    width: 48px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg') no-repeat 0 / 100%;
+    border: 0 transparent solid;
+    border-radius: 50%;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+@media (min-width: 768px) {
+    .pm {
+        font-size: 1.8rem;
+    }
+    .pm-main {
+        height: calc(100% - 287px);
+    }
+    .pm-cta {
+        height: 64px;
+        line-height: 64px;
+        border-radius: 32px;
+    }
+    .pm-cta i {
+        height: 64px;
+        width: 64px;
+    }
+    .pm-video {
+        height: 230px;
+    }
+}
+
+@media (min-width: 992px) {
+    .pm-main {
+        margin: 0 auto;
+        padding: 0 3.6rem;
+        height: auto;
+        width: 900px;
+        font-size: 0;
+    }
+    .pm-main h1 {
+        margin: 0 auto 4rem;
+        padding: 0;
+        width: 700px;
+        font-size: 4.4rem;
+    }
+    .pm-main h1 small {
+        margin-bottom: .25em;
+    }
+    .pm-main p {
+        position: static;
+        margin: 0;
+        padding: 3em 0 1em 3.6rem;
+        width: 50%;
+        font-size: 2.4rem;
+        float: right;
+        display: inline-block;
+        transform: none;
+    }
+    .pm-main .pm-cta {
+        margin: 3rem 0;
+        display: block;
+    }
+    .pm-video {
+        position: static;
+        margin: 0;
+        height: 320px;
+        width: 50%;
+        display: inline-block;
+    }
+    .pm-footer .pm-cta {
+        display: none;
+    }
+}

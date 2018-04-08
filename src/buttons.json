@@ -6,20 +6,20 @@
         { "label": "Я подписался", "value": ""}
     ],
     "menu": [
-        { "label": "Правила конкурса", "value": ":rules" },
-        { "label": "Мои Баллы", "value": ":points" },
-        { "label": "🔝 ТОП 2️⃣0️⃣", "value": ":top@20" },
-        { "label": "Призы 🎁", "value": ":rewards" },
+        { "label": "Правила", "value": ":rules" },
         { "label": "Пригласить друга", "value": ":invite@friend" },
-        { "label": "Организаторы ™️", "value": ":whoami" }
+        { "label": "Мои Баллы", "value": ":points" },
+        { "label": "Топ 20", "value": ":top@20" },
+        { "label": "Призы", "value": ":rewards" },
+        { "label": "Организаторы", "value": ":whoami" }
     ],
     "menuBack": [
         { "label": "🔙 Назад", "value": ":back" }
     ],
     "signIn": [
-        { "label": "Войти через Instagram", "value": "$domain/sign_in/"}
+        { "label": "Авторизоваться", "value": "$domain/sign_in/"}
     ],
     "subscribe": [
-        { "label": "Подписаться", "value": "$domain/subscribe/" }
+        { "label": "Подписаться", "value": "https://instagram.com/pugachevmark/" }
     ]
 }

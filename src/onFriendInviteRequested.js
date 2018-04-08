@@ -13,17 +13,12 @@ module.exports = function($api, context) {
         //'tg://resolve?domain=pugachevs_bot&start=$user'.replace(/\$user/g, userData.username);
 
     if(!!username) {
+        setTimeout(function() { $bot.send(MESSAGES.invitationLink, {}) }, 300)
+
         $messages = [
-            MESSAGES.invitationLink,
             `[${MESSAGES.contestName}](${_invitationLink})`
         ]
     }
     
-    return context.answerCbQuery(MESSAGES.loading)
-        .then(() => $bot.editMessage(
-            context,
-            $messages.join(''),
-            $buttons
-        ))
-        .catch(console.error)
+    return $bot.send($messages.join(''), $buttons)
 };

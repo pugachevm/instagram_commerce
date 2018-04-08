@@ -1,0 +1,41 @@
+html {
+    height: 100%;
+    font-family: sans-serif;
+    font-size: 62.5%;
+}
+body {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-size: 1rem;
+    color: #010101;
+}
+
+* {
+    line-height: 1.168;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+@font-face {
+    font-family: "FuturaPTLight";
+    src: url("fonts/FuturaPTLight.eot");
+    src: url("fonts/FuturaPTLight.eot?#iefix") format("embedded-opentype"), url("fonts/FuturaPTLight.woff") format("woff"), url("fonts/FuturaPTLight.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+  }
+  @font-face {
+    font-family: "FuturaPTMedium";
+    src: url("fonts/FuturaPTMedium.eot");
+    src: url("fonts/FuturaPTMedium.eot?#iefix") format("embedded-opentype"), url("fonts/FuturaPTMedium.woff") format("woff"), url("fonts/FuturaPTMedium.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+  }
+  @font-face {
+    font-family: "FuturaPTDemi";
+    src: url("fonts/FuturaPTDemi.eot");
+    src: url("fonts/FuturaPTDemi.eot?#iefix") format("embedded-opentype"), url("fonts/FuturaPTDemi.woff") format("woff"), url("fonts/FuturaPTDemi.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+  }
