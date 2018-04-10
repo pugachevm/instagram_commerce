@@ -82,8 +82,10 @@ function formatArgs(args) {
         month = +date.substr(3,5),
         hours = +time.substr(0,2),
         minutes = +time.substr(3,5),
-        timeNow = +(new Date()),
-        timeEnd = +(new Date(2018, month-1, day, hours, minutes));
+        dateNow = new Date(),
+        dateEnd = new Date(2018, month-1, day, hours, minutes),
+        timeNow = +dateNow,
+        timeEnd = (+dateEnd) + (dateEnd.getTimezoneOffset() * 60 * 1000);
     
     return {
         ms: Math.max(0, timeEnd - timeNow),
