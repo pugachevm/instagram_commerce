@@ -30,20 +30,27 @@ module.exports = function($api, chatId, context) {
     switch(param) {
         case 'new':
             messageResolver(_message.id, _message);
-            $message.push([ _message.text, ' было *добавлено*' ].join(''));
+            $message.push([ _message.text, ' было *добавлено* в очередь' ].join(''));
             break;
         case 'delete':
             messageResolver(args);
-            $message.push([ args, ' было *удалено*' ].join(''));
+            $message.push([ args, ' было *удалено* из очереди' ].join(''));
             break;
         case 'all':
-            Object.keys(STORAGE_MESSAGES).forEach(id => {
+            let messageIds = Object.keys(STORAGE_MESSAGES);
+
+            if(!messageIds.length) {
+                $message.push('_Сообщений нет_')
+            }
+            messageIds.forEach(id => {
                 let _message = STORAGE_MESSAGES[id];
-                $message.push([ '*'+ id +'*', _message.text ].join(' : '))
+                $message.push([ '*'+ id +'*', _message.text ].join(': '))
             });
             break;
         case 'help':
-
+            $message.push(['*/message@new* *ДД*.*ММ* *чч*.*мм* *\*Ваше сообшение\**', 'Команда добавляет новое сообщение в очередь на отправку в указанные день месяца и время дня'].join(' - '));
+            $message.push(['*/message@delete* *Номер сообщения*', 'Удаляет сообщение из очереди'].join(' - '));
+            $message.push(['*/message@all*', 'Выдает список всех сообщений в очереди, в формате: Номер сообщения: Текст сообщения'].join(' - '));
             break;
     }
 
@@ -58,8 +65,8 @@ function messageResolver(id, message) {
 
     _message && clearTimeout(_message.to);
 
-    if(message) {
-        message.to = setTimeout(() => { dispatchAll(message) }, message.ms);
+    if(message) {console.log('%o: %oms', id, message.ms);
+        message.to = setTimeout(() => { clearTimeout(message.to); dispatchAll(message) }, message.ms);
         return STORAGE_MESSAGES[id] = message;
     }
 
@@ -76,8 +83,7 @@ function formatArgs(args) {
         hours = +time.substr(0,2),
         minutes = +time.substr(3,5),
         timeNow = +(new Date()),
-        timeEnd = +(new Date(2018, month-1, day, hours, minutes)),
-        _date = { day, month, hours, minutes };
+        timeEnd = +(new Date(2018, month-1, day, hours, minutes));
     
     return {
         ms: Math.max(0, timeEnd - timeNow),
