@@ -4,9 +4,15 @@ let mongoose = require('mongoose'),
 
 const URI_MONGO = fs.readFileSync('mongodb.config', 'utf-8');
 
+console.log('URL: %o', URI_MONGO);
+
 //get started
-mongoose
-    .connect(URI_MONGO);
+try {
+    mongoose
+        .connect(URI_MONGO);
+} catch(e) {
+    console.error('Error: %o', e);
+}
 
 let instagram_commerce_db = mongoose.connection;
 
